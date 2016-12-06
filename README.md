@@ -1,3 +1,4 @@
+
 # gk-analysis
 
 Simple python 2 tool designed to analyse game reviews produced by the French website [Gamekult](http://www.gamekult.com/).
@@ -5,6 +6,22 @@ Simple python 2 tool designed to analyse game reviews produced by the French web
 [![N|Solid](https://www.python.org/static/img/python-logo.png)](https://nodesource.com/products/nsolid)
 
 gk-analysis is able to fetch data from the Gamekult website and then process everything to make interesting graphs.
+
+# Table of content
+* [gk-analysis](#gk-analysis)
+     * [Installation](#installation)
+     * [Dependencies](#dependencies)
+     * [Usage](#usage)
+        * [General usage](#general-usage)
+        * [Fetch data](#fetch-data)
+        * [Visualize data](#visualize-data)
+        * [Analyse data](#analyse-data)
+     * [Output examples](#output-examples) <- probably what you are looking for
+     * [Online Demo](#online-demo) (not yet available)
+     * [Development](#development)
+     * [Todos](#todos)
+     * [License](#license)
+
 
 ### Installation
 
