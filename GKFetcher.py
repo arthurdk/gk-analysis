@@ -1,11 +1,22 @@
 from bs4 import BeautifulSoup
 import urllib2
+import urllib
 from GKReview import *
 import pickle
 import os.path
 import re
+import sys
+
 db_file = "gk-list.db"
 db_file2 = "gk-full.db"
+
+
+def represents_int(s):
+    try:
+        int(s)
+        return True
+    except ValueError:
+        return False
 
 
 def fetch_parse_test(url):
@@ -24,7 +35,7 @@ def fetch_parse_test(url):
     except AttributeError:
         print("An error happened, review (content) skipped.")
         pass
-    return content
+    return content.encode('utf-8')
 
 
 def fetch_parse_page(url):
@@ -34,30 +45,41 @@ def fetch_parse_page(url):
     :return: list of reviews
     """
     gk_reviews = []
-    html = urllib2.urlopen(url).read()
-    soup = BeautifulSoup(html, 'html.parser')
-    for article in soup.find_all('article'):
+    nb_try = 0
+    while(nb_try < 3):
         try:
-            review_content = article.findAll("div", {"class": "review-content"})
-            rating = article.findAll("div", {"class": "rating"})[0].getText()
-            if len(review_content) > 0:
-                review_soup = review_content[0]
-                info_div = review_soup.findAll("p", {"class": "title"})[0]
-                review_link = "http://www.gamekult.com" + info_div.findAll("a")[0].get('href')
-                title = info_div.getText()
+            html = urllib2.urlopen(url).read()
+            soup = BeautifulSoup(html, 'html.parser')
+            for article in soup.find_all('article'):
+                try:
+                    review_content = article.findAll("div", {"class": "review-content"})
+                    rating = article.findAll("div", {"class": "rating"})[0].getText()
+                    if len(review_content) > 0 and represents_int(rating):
+                        review_soup = review_content[0]
+                        info_div = review_soup.findAll("p", {"class": "title"})[0]
+                        review_link = "http://www.gamekult.com" + info_div.findAll("a")[0].get('href')
+                        title = info_div.getText()
 
-                # Shitty regex hack
-                raw_reviewer = review_soup.findAll("p", {"class": "byline"})[0].getText()
-                raw_reviewer = raw_reviewer.split("Par ")[1].split(", le")
-                reviewer = raw_reviewer[0]
-                match = re.search(r'(\d+/\d+/\d+)', raw_reviewer[1])
-                date = match.group(1)
+                        # Shitty regex hack
+                        raw_reviewer = review_soup.findAll("p", {"class": "byline"})[0].getText()
+                        raw_reviewer = raw_reviewer.split("Par ")[1].split(", le")
+                        reviewer = raw_reviewer[0]
+                        match = re.search(r'(\d+/\d+/\d+)', raw_reviewer[1])
+                        date = match.group(1)
 
-                review = GKReview(title=title, reviewer=reviewer, review_link=review_link, rating=rating, date=date)
-                gk_reviews.append(review)
-        except:
-            print("An error happened :(.")
-            pass
+                        review = GKReview(title=title, reviewer=reviewer, review_link=review_link, rating=rating, date=date)
+                        gk_reviews.append(review)
+                except:
+                    print("Failed to parse test from list")
+                    print(article.prettify())
+                    print "Unexpected error:", sys.exc_info()[0]
+                    pass
+            nb_try = 3
+        except urllib2.HTTPError:
+            print("Entire page skipped due to server error")
+            if nb_try < 3:
+                print("Retrying...")
+
     return gk_reviews
 
 
@@ -116,12 +138,28 @@ def fetch_parse_full_tests(force_download, cache, nb_page):
             reviews = pickle.load(data_in)
     return reviews
 
+'''
+def fetch_translation(reviews):
+
+    for review in reviews:
+        try:
+            params = {"lang": "fr-en", "text": review.content,
+                      "key": "my_key",
+                      'format': "plain"}
+            url = "https://translate.yandex.net/api/v1.5/tr.json/translate?%s" % (urllib.urlencode(params))
+            data = urllib2.urlopen(url).read()
+            review.translation = data
+        except:
+            print("A translation error happened.")
+            pass
+    return reviews
+'''
+
 
 # For manual testing purpose
 def main():
     reviews = fetch_parse_nth_first_page(10)
     for review in reviews:
-        # review.print_review()
         print review.link
         review.content = fetch_parse_test(review.link)
         print(review.content)

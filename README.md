@@ -78,7 +78,7 @@ $ python GKAnalysis.py visualize --help
 ```
 
 ```
-usage: GKAnalysis.py visualize [-h] [-R [reviewers]] [-N [nb_page]] [-Y year]
+usage: GKAnalysis.py visualize [-h] [-R [reviewers]] [-G by] [-Y year]
                                command [command ...]
 
 positional arguments:
@@ -91,9 +91,13 @@ optional arguments:
   -R [reviewers], --reviewers [reviewers]
                         List of reviewers to visualize
                         Example: "Stoon,Gautoz"
+  -G by, --group-by by  Determine how to group by data (Default: data grouped by reviewer)
+                        List of options:
+                        - reviewer
+                        - year
+                        - nothing
   -Y year, --filter-by-year year
                         Visualize data for a particular year
-
 ```
 ### Output examples
 
@@ -108,6 +112,7 @@ Want to contribute or fork? That's great, go ahead :) !
  - Bag of word analysis
  - Deep learning analysis
  - Multiple outputs (ASCII table, CSV support)
+ - Group by reviewer AND year at the same time
 
 This project could also support other websites but that's not really what I am personally interested in (I will still welcome PR though).
 
