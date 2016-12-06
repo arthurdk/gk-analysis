@@ -131,7 +131,8 @@ def main():
             else:
                 data, anno_labels = getattr(pre_processor,
                                             "grouped_" + method)(reviews, labels)
-                title = visualizer.get_named_title(method + " rating given by GK reviewers", filterer.reviewers_filtering)
+                title = visualizer.get_named_title(method + " " + args.metric + " given by GK reviewers",
+                                                   filterer.reviewers_filtering)
                 title = visualizer.get_dated_title(title, reviews)
                 title = visualizer.get_rating_filtered_title(title)
                 ylabel = method + " " + args.metric

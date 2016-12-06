@@ -96,6 +96,6 @@ class GKVisualizer:
                 ),
             )
         }
+
         plotly.offline.plot(figure)
-        # Save the figure as a png image:
-        # plotly.plotly.image.save_as(fig, 'my_plot.png')
+

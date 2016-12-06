@@ -9,6 +9,7 @@ class GKReview:
         self.link = review_link
         self.rating = int(rating)
         self.date = datetime.strptime(date, '%d/%m/%Y')
+        self.content = ""
 
     def print_review(self):
         print(self.title, " ", self.rating, " by ", self.reviewer)
@@ -18,7 +19,7 @@ class GKReview:
             return self.rating
         elif metric == 'length':
             return len(self.content)
-        elif metric == 'wordcount':
+        elif metric == 'wordcount':  # Simple implementation
             return len(self.content.split(" "))
         else:
             return self.rating

@@ -152,7 +152,6 @@ optional arguments:
 ```
 ### Output examples
 
-Section not finished yet.
 
 ### Development
 Want to contribute or fork? That's great, go ahead but be remember this is some nice Spaghetti coding ;) ! (i.e Quick & Dirty)
