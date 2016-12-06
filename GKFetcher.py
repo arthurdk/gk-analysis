@@ -8,8 +8,12 @@ db_file = "gk-list.db"
 db_file2 = "gk-full.db"
 
 
-# Spaghetti code retrieving content from a single test
 def fetch_parse_test(url):
+    """
+    Spaghetti code retrieving content from a single test
+    :param url:
+    :return: the test content (string)
+    """
     content = ""
     try:
         html = urllib2.urlopen(url).read()
@@ -23,8 +27,12 @@ def fetch_parse_test(url):
     return content
 
 
-# Spaghetti code retrieving a list of reviews
 def fetch_parse_page(url):
+    """
+    Spaghetti code retrieving a list of reviews
+    :param url:
+    :return: list of reviews
+    """
     gk_reviews = []
     html = urllib2.urlopen(url).read()
     soup = BeautifulSoup(html, 'html.parser')
@@ -53,11 +61,17 @@ def fetch_parse_page(url):
     return gk_reviews
 
 
-# Spaghetti code retrieving a list of reviews for the n-th last page of tests
-def fetch_parse_nth_first_page(nth, force_download, cache):
+def fetch_parse_nth_first_page(nb_page, force_download, cache):
+    """
+    Spaghetti code retrieving a list of reviews for the n-th last page of tests
+    :param nb_page: number of page to process
+    :param force_download:
+    :param cache: true if cache allowed
+    :return: list of reviews
+    """
+    reviews = []
     # Fetch test listing if needed
     if not os.path.isfile(db_file) or force_download:
-        reviews = []
         page = 1
         condition = True
         while condition:
@@ -66,7 +80,7 @@ def fetch_parse_nth_first_page(nth, force_download, cache):
             reviews = reviews + fetched
             print("Processed page %s" % page)
             page += 1
-            condition = len(fetched) > 0 and page <= nth
+            condition = len(fetched) > 0 and page <= nb_page
         if cache:
             with open(db_file, 'wb') as output:
                 pickle.dump(reviews, output, protocol=pickle.HIGHEST_PROTOCOL)
@@ -77,8 +91,14 @@ def fetch_parse_nth_first_page(nth, force_download, cache):
     return reviews
 
 
-# Fetch & Parse both lists and content
 def fetch_parse_full_tests(force_download, cache, nb_page):
+    """
+    Fetch & Parse both lists and content
+    :param force_download:
+    :param cache: true if cache allowed
+    :param nb_page:
+    :return: list of reviews
+    """
     reviews = []
     # Fetch tests content if needed
     if not os.path.isfile(db_file2) or force_download:

@@ -12,7 +12,11 @@ gk-analysis is able to fetch data from Gamekult website and then allows:
 ### Installation
 
 ```sh
-$ git clone <project url>
+$ git clone https://github.com/arthurdk/gk-analysis.git
+```
+or
+```sh
+$ wget https://github.com/arthurdk/gk-analysis/archive/master.zip
 ```
 
 ### Dependencies
@@ -58,13 +62,12 @@ $ python GKAnalysis.py fetch --help
 ```
 
 ```
-usage: GKAnalysis.py fetch [-h] [nb_page]
-
-positional arguments:
-  nb_page     Number of page containing reviews to fetch (Default: 10)
+usage: GKAnalysis.py fetch [-h] [-N [nb_page]]
 
 optional arguments:
-  -h, --help  show this help message and exit
+  -h, --help            show this help message and exit
+  -N [nb_page], --nb_page [nb_page]
+                        Number of page containing reviews to fetch (Default: 10)
 
 ```
 
@@ -75,15 +78,22 @@ $ python GKAnalysis.py visualize --help
 ```
 
 ```
-usage: GKAnalysis.py visualize [-h] command [command ...]
+usage: GKAnalysis.py visualize [-h] [-R [reviewers]] [-N [nb_page]] [-Y year]
+                               command [command ...]
 
 positional arguments:
-  command     List of available visualization commands:
-              - variance
-              - mean
+  command               List of available visualization commands:
+                        - variance
+                        - mean
 
 optional arguments:
-  -h, --help  show this help message and exit
+  -h, --help            show this help message and exit
+  -R [reviewers], --reviewers [reviewers]
+                        List of reviewers to visualize
+                        Example: "Stoon,Gautoz"
+  -Y year, --filter-by-year year
+                        Visualize data for a particular year
+
 ```
 ### Output examples
 
@@ -97,6 +107,7 @@ Want to contribute or fork? That's great, go ahead :) !
  - More data visualization
  - Bag of word analysis
  - Deep learning analysis
+ - Multiple outputs (ASCII table, CSV support)
 
 This project could also support other websites but that's not really what I am personally interested in (I will still welcome PR though).
 
