@@ -12,3 +12,13 @@ class GKReview:
 
     def print_review(self):
         print(self.title, " ", self.rating, " by ", self.reviewer)
+
+    def get_metric(self, metric):
+        if metric == 'rating':
+            return self.rating
+        elif metric == 'length':
+            return len(self.content)
+        elif metric == 'wordcount':
+            return len(self.content.split(" "))
+        else:
+            return self.rating

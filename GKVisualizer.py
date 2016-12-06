@@ -28,7 +28,7 @@ class GKVisualizer:
                 data, anno_labels = getattr(self.pre_processor, "grouped_" + method)(reviews, self.group_by_labels)
                 title = self.get_named_title(method + " rating given by GK reviewers", self.reviewers_filtering)
                 plt.title(self.get_dated_title(title, reviews))
-                ylabel = method + " rating"
+                ylabel = method + " " + self.pre_processor.metric
                 if self.group_by == 'year':
                     pass
                 elif self.group_by == 'reviewer':
@@ -84,7 +84,6 @@ class GKVisualizer:
         return title
 
     def group_plot(self, data, labels, title, ylabel):
-
         plt.bar(range(len(data)), data, align='center')
         plt.xticks(range(len(data)), labels)
         plt.xlabel(self.group_by)
@@ -93,6 +92,7 @@ class GKVisualizer:
         plt.title(title)
         plt.show()
 
+    # Unused anymore
     def plot_variance(self, reviews):
         ratings = [list(r.rating for r in reviews)]
         plt.bar(1, np.var(ratings))
@@ -104,6 +104,7 @@ class GKVisualizer:
         plt.title(self.get_dated_title(title, reviews))
         plt.show()
 
+    # Unused anymore
     def plot_mean(self, reviews):
 
         ratings = [x.rating for x in reviews]

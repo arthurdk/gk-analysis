@@ -28,11 +28,16 @@ def main():
     parser_visualize.add_argument('-R', '--reviewers', metavar='reviewers', nargs="?",
                                   help='List of reviewers to visualize \n'
                                        'Example: "Stoon,Gautoz"', type=str)
-    group_by_choices = ["reviewer", "year", "nothing"]
+    group_by_choices = ["reviewer", "year"]
     parser_visualize.add_argument('-G', '--group-by', metavar='by',
                                   help='Determine how to group by data (Default: data grouped by reviewer) '
                                        "\nList of options:\n- " + "\n- ".join(group_by_choices),
-                                  choices=group_by_choices, default='nothing')
+                                  choices=group_by_choices, default='reviewer')
+    metric_choices = ["rating", "length", "wordcount"]
+    parser_visualize.add_argument('-M', '--metric', metavar='metric',
+                                  help='Determine which metric to analyze (Default: Rating) '
+                                       "\nList of options:\n- " + "\n- ".join(metric_choices),
+                                  choices=metric_choices, default='rating')
     parser_visualize.add_argument('-Y', '--filter-by-year', metavar='year', type=int,
                                   help='Visualize data for a particular year')
     # Fetch parser
@@ -76,7 +81,7 @@ def main():
     '''
 
     if args.command == 'visualize':
-        pre_processor = GKPreprocessor(group_by_option=args.group_by)
+        pre_processor = GKPreprocessor(group_by_option=args.group_by, metric=args.metric)
         # Filtering
         if args.filter_by_year is not None:
             reviews = pre_processor.filter_by_year(reviews, args.filter_by_year)

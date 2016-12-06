@@ -3,8 +3,9 @@ import numpy as np
 
 
 class GKPreprocessor:
-    def __init__(self, group_by_option='nothing'):
+    def __init__(self, metric, group_by_option='nothing'):
         self.group_by = group_by_option
+        self.metric = metric
 
     def perform_group_by(self, reviews):
         if self.group_by == "reviewer":
@@ -14,13 +15,12 @@ class GKPreprocessor:
         else:
             return reviews, []
 
-    @staticmethod
-    def grouped_mean(grouped_reviews, labels):
+    def grouped_mean(self, grouped_reviews, labels):
         means = []
         annotated_labels = list(labels)
         for index, group in enumerate(grouped_reviews):
-            ratings = [x.rating for x in group]
-            means.append(np.mean(ratings))
+            metrics = [x.get_metric(self.metric) for x in group]
+            means.append(np.mean(metrics))
             # Label annotation
             if isinstance(labels[index], basestring):
                 annotated_labels[index] += " \n (%d)" % len(group)
@@ -28,20 +28,19 @@ class GKPreprocessor:
                 annotated_labels[index] = str(annotated_labels[index]) + " \n (%d)" % len(group)
         return means, annotated_labels
 
-    @staticmethod
-    def grouped_variance(grouped_reviews, labels):
-        ratings = []
+    def grouped_variance(self, grouped_reviews, labels):
+        metrics = []
         variances = []
         annotated_labels = list(labels)
         for group in grouped_reviews:
-            ratings.append(list(r.rating for r in group))
-        for idx, ratings_by_label in enumerate(ratings):
-            variances.append(np.var(ratings_by_label, 0))
+            metrics.append(list(r.get_metric(self.metric) for r in group))
+        for idx, metrics_by_label in enumerate(metrics):
+            variances.append(np.var(metrics_by_label, 0))
             # Label annotation
             if isinstance(labels[idx], basestring):
-                annotated_labels[idx] += " \n (%d)" % len(ratings_by_label)
+                annotated_labels[idx] += " \n (%d)" % len(metrics_by_label)
             else:
-                annotated_labels[idx] = str(annotated_labels[idx]) + " \n (%d)" % len(ratings_by_label)
+                annotated_labels[idx] = str(annotated_labels[idx]) + " \n (%d)" % len(metrics_by_label)
         return variances, annotated_labels
 
     @staticmethod
