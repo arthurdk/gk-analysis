@@ -91,9 +91,23 @@ def main():
             reviewers_filtering = args.reviewers.split(",")
             reviews = GKPreprocessor.filter_by_reviewers(reviews, reviewers_filtering)
         reviews, labels = pre_processor.perform_group_by(reviews)
-        visualizer = GKVisualizer(reviewers_filtering=reviewers_filtering, methods=args.visualize_command,
-                                  group_by_option=args.group_by, group_by_labels=labels,
-                                  pre_processor=pre_processor)
-        visualizer.visualize(reviews)
+        visualizer = GKVisualizer(reviewers_filtering=reviewers_filtering, group_by_option=args.group_by)
+
+        # Visualize all methods
+        for method in args.visualize_command:
+            if visualizer.group_by == 'nothing':
+                getattr(visualizer, "plot_" + method)(reviews)
+            else:
+                data, anno_labels = getattr(pre_processor,
+                                            "grouped_" + method)(reviews, labels)
+                title = visualizer.get_named_title(method + " rating given by GK reviewers", reviewers_filtering)
+                plt.title(visualizer.get_dated_title(title, reviews))
+                ylabel = method + " " + args.metric
+                visualizer.group_plot(data=data,
+                                      labels=anno_labels,
+                                      ylabel=ylabel,
+                                      title=title)
+
+
 if __name__ == "__main__":
     main()

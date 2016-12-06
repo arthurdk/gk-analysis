@@ -78,7 +78,8 @@ $ python GKAnalysis.py visualize --help
 ```
 
 ```
-usage: GKAnalysis.py visualize [-h] [-R [reviewers]] [-G by] [-Y year]
+usage: GKAnalysis.py visualize [-h] [-R [reviewers]] [-G by] [-M metric]
+                               [-Y year]
                                command [command ...]
 
 positional arguments:
@@ -95,7 +96,12 @@ optional arguments:
                         List of options:
                         - reviewer
                         - year
-                        - nothing
+  -M metric, --metric metric
+                        Determine which metric to analyze (Default: Rating)
+                        List of options:
+                        - rating
+                        - length
+                        - wordcount
   -Y year, --filter-by-year year
                         Visualize data for a particular year
 ```

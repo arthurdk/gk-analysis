@@ -13,30 +13,10 @@ class VisualizationStrategy:
 
 class GKVisualizer:
 
-    def __init__(self, reviewers_filtering, methods, pre_processor, group_by_option='nothing', group_by_labels=[]):
+    def __init__(self, reviewers_filtering, group_by_option='nothing'):
         self.reviewers_filtering = reviewers_filtering
         self.group_by = group_by_option
-        self.methods = methods
-        self.group_by_labels = group_by_labels
-        self.pre_processor = pre_processor
 
-    def visualize(self, reviews):
-        for method in self.methods:
-            if self.group_by == 'nothing':
-                getattr(self, "plot_" + method)(reviews)
-            else:
-                data, anno_labels = getattr(self.pre_processor, "grouped_" + method)(reviews, self.group_by_labels)
-                title = self.get_named_title(method + " rating given by GK reviewers", self.reviewers_filtering)
-                plt.title(self.get_dated_title(title, reviews))
-                ylabel = method + " " + self.pre_processor.metric
-                if self.group_by == 'year':
-                    pass
-                elif self.group_by == 'reviewer':
-                    pass
-                self.group_plot(data=data,
-                                labels=anno_labels,
-                                ylabel=ylabel,
-                                title=title)
 
 
     @staticmethod
@@ -110,7 +90,6 @@ class GKVisualizer:
         ratings = [x.rating for x in reviews]
         mean = np.mean(ratings)
 
-        # Actual plotting
         plt.bar(range(1), mean, align='center')
         plt.xticks(range(1), ["Data"])
         plt.xlabel(self.group_by)
