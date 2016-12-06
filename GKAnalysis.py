@@ -67,6 +67,13 @@ def _argument_parsing():
                                 help="List of available analysing commands: \n"
                                      "- " + "\n- ".join(analyse_command),
                                 choices=analyse_command)
+    group = parser_analyse.add_mutually_exclusive_group()
+    group.add_argument('--mask-url', metavar='url', help='URL of a mask for the wordcloud')
+    group.add_argument('--mask-path', metavar='path-to-file', help='Path to a mask for the wordcloud')
+    parser_analyse.add_argument('--word-cloud-bg', metavar='color',
+                                help='Background color for the word cloud Example: black')
+    parser_analyse.add_argument('--word-cloud-color-scheme', metavar='color_scheme',
+                                help="Color scheme for the word cloud (anything only grey is supported for now)")
     parser_analyse.add_argument('-N', '--nb_words', metavar="nb_words", type=int,
                                 help="Number of best ranked words to select (Default: 100)",
                                 default=100, nargs='?')
@@ -115,9 +122,16 @@ def main():
             top_words_indexes = pre_processor.perform_feature_selection(bag_of_words, classes, nb_words=args.nb_words)
             # processed_bag_of_words = bag_of_words[:, top_words_indexes[0]]
             print("Most representative words for GK ", filterer.reviewers_filtering)
+            mask = None
             top_words = [vocab[i] for i in top_words_indexes]
 
-            visualizer.word_cloud(" ".join(top_words))
+            if args.mask_url is not None:
+                mask = GKFetcher.image_url_fetcher(args.mask_url)
+            elif args.mask_path is not None:
+                mask = GKFetcher.image_fetcher(args.mask_path)
+            visualizer.word_cloud_background = args.word_cloud_bg
+            visualizer.word_cloud_color_scheme = args.word_cloud_color_scheme
+            visualizer.word_cloud(" ".join(top_words), mask=mask)
         else:
             print("Not implemented yet!")
 

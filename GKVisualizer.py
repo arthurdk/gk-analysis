@@ -3,7 +3,6 @@ from plotly.graph_objs import Scatter, Layout, Bar, Figure
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 
-
 '''
 class VisualizationStrategy:
     def __init__(self):
@@ -12,22 +11,42 @@ class VisualizationStrategy:
     Plot, CSV, ASCII = range(3)
 
 '''
-
+import random
 
 class GKVisualizer:
 
-    def __init__(self, reviewers_filtering, group_by_option='nothing', rating_filters=[]):
+    def __init__(self, reviewers_filtering, group_by_option='nothing',
+                 rating_filters=[],
+                 word_cloud_background="white",
+                 color_scheme=None):
         self.reviewers_filtering = reviewers_filtering
         self.group_by = group_by_option
         self.rating_filters = rating_filters
+        self.word_cloud_background = word_cloud_background
+        self.word_cloud_color_scheme = color_scheme
 
     @staticmethod
-    def word_cloud(words):
-        wordcloud = WordCloud(background_color='white',
-                              width=1200,
-                              height=1000
-                              ).generate(words)
-        plt.imshow(wordcloud)
+    def _grey_color_func(word, font_size, position, orientation, random_state=None, **kwargs):
+        return "hsl(0, 0%%, %d%%)" % random.randint(60, 100)
+
+    def word_cloud(self, words, mask=None):
+
+        if mask is not None:
+            wordcloud = WordCloud(background_color=self.word_cloud_background,
+                                  width=1200,
+                                  height=1000,
+                                  mask=mask
+                                  ).generate(words)
+        else:
+            wordcloud = WordCloud(background_color=self.word_cloud_background,
+                                  width=1200,
+                                  height=1000
+                                  ).generate(words)
+
+        if self.word_cloud_color_scheme is not None:
+            plt.imshow(wordcloud.recolor(color_func=GKVisualizer._grey_color_func, random_state=3))
+        else:
+            plt.imshow(wordcloud)
         plt.axis('off')
         plt.show()
 

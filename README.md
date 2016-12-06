@@ -9,6 +9,8 @@ gk-analysis is able to fetch data from the Gamekult website and then process eve
 
 # Table of content
 * [gk-analysis](#gk-analysis)
+     * [Output examples](#output-examples) <- probably what you are looking for
+     * [Online Demo](#online-demo) (not yet available)
      * [Installation](#installation)
      * [Dependencies](#dependencies)
      * [Usage](#usage)
@@ -16,12 +18,66 @@ gk-analysis is able to fetch data from the Gamekult website and then process eve
         * [Fetch data](#fetch-data)
         * [Visualize data](#visualize-data)
         * [Analyse data](#analyse-data)
-     * [Output examples](#output-examples) <- probably what you are looking for
-     * [Online Demo](#online-demo) (not yet available)
      * [Development](#development)
      * [Todos](#todos)
      * [License](#license)
 
+
+### Output examples
+
+
+You can display the most meaningful words for a list of reviewers given that the rating is less or equals to 5.
+```sh
+$ python  GKAnalysis.py  analyse --rating-le 5 words --reviewers "Stoon"
+```
+[![N|Solid](http://reho.st/preview/self/0daea958e847382e80ff4a7b469aac6f92072536.png)](http://reho.st/view/self/0daea958e847382e80ff4a7b469aac6f92072536.png)
+
+You can also display the variance of ratings by reviewer
+```sh
+$ python  GKAnalysis.py  visualize  variance --group-by reviewer
+```
+[![N|Solid](http://reho.st/preview/self/0d454af889ec835fd79a4ec13ca2c2c92f913b4f.png)](http://reho.st/view/self/0d454af889ec835fd79a4ec13ca2c2c92f913b4f.png)
+
+Let's zoom on one in particular
+
+```sh
+$ python  GKAnalysis.py  visualize  variance --group-by year -R "Stoon"
+```
+[![N|Solid](http://reho.st/preview/self/9c3a3e911f0c9edf1824adfe49334962cbb8290d.png)](http://reho.st/view/self/9c3a3e911f0c9edf1824adfe49334962cbb8290d.png)
+
+Ever increasing variance interesting.
+
+Other metrics are available, for example you can have a look at wordcount
+
+```sh
+$ python  GKAnalysis.py  visualize  mean --metric wordcount --group-by reviewer
+```
+
+[![N|Solid](http://reho.st/medium/self/c0b18bf8d857bb80cc57fcf389ec3e49bb01169c.png)](http://reho.st/view/self/c0b18bf8d857bb80cc57fcf389ec3e49bb01169c.png)
+
+The tool also support mask system for the word cloud, a customizable background and color set
+
+```sh
+$ python GKAnalysis.py analyse words --mask-url https://pre00.deviantart.net/4ae0/th/pre/f/2015/208/e/4/batman_logo_simple_by_animedark2-d933xx7.jpg --nb_words 200 --word-cloud-bg black --word-cloud-color-scheme whatever --rating-le 3
+
+```
+
+[![N|Solid](http://reho.st/medium/self/a71eaac567ff912dbf667a9ab7e9e5b3b3adc69e.png)](http://reho.st/view/self/a71eaac567ff912dbf667a9ab7e9e5b3b3adc69e.png)
+
+
+Previous word cloud, all GK reviews (at least the 20 last page of tests), next one only Stoon for comparizon.
+
+```sh
+$ python GKAnalysis.py analyse words --mask-url https://pre00.deviantart.net/4ae0/th/pre/f/2015/208/e/4/batman_logo_simple_by_animedark2-d933xx7.jpg --nb_words 200 --word-cloud-bg black --word-cloud-color-scheme whatever --rating-le 3 -R "Stoon"
+
+```
+
+[![N|Solid](http://reho.st/medium/self/f18d051d6820765c9c640c3fa96d556ef6151d07.png)](http://reho.st/view/self/f18d051d6820765c9c640c3fa96d556ef6151d07.png)
+
+
+### Online Demo
+
+Soon !
 
 ### Installation
 
@@ -43,7 +99,7 @@ List of dependencies: (there are way too much I know)
  - image
  - wordcloud
  - stop_words
- - ntlk
+ - nltk
  - pandas
 
 Quick install commands for Ubuntu based system:
@@ -139,7 +195,11 @@ $ python GKAnalysis.py analyse --help
 
 usage: GKAnalysis.py analyse [-h] [-R [reviewers]] [-Y year]
                              [--rating-le rating] [--rating-ge rating]
-                             [--rating-eq rating] [-G by] [-N [nb_words]]
+                             [--rating-eq rating] [-G by]
+                             [--mask-url url | --mask-path path-to-file]
+                             [--word-cloud-bg color]
+                             [--word-cloud-color-scheme color_scheme]
+                             [-N [nb_words]]
                              command [command ...]
 
 positional arguments:
@@ -159,47 +219,19 @@ optional arguments:
   --rating-eq rating    Filter review having a rating equals to the given one
   -G by, --group-by by  Determine how to group by data (Default: data grouped
                         by reviewer) List of options: - reviewer - year
+  --mask-url url        URL of a mask for the wordcloud
+  --mask-path path-to-file
+                        Path to a mask for the wordcloud
+  --word-cloud-bg color
+                        Background color for the word cloud Example: black
+  --word-cloud-color-scheme color_scheme
+                        Color scheme for the word cloud (anything only grey is
+                        supported for now)
   -N [nb_words], --nb_words [nb_words]
                         Number of best ranked words to select (Default: 100)
 
 
 ```
-### Output examples
-
-
-You can display the most meaningful words for a list of reviewers given that the rating is less or equals to 5.
-```sh
-$ python  GKAnalysis.py  analyse --rating-le 5 words --reviewers "Stoon"
-```
-[![N|Solid](http://reho.st/preview/self/0daea958e847382e80ff4a7b469aac6f92072536.png)](http://reho.st/view/self/0daea958e847382e80ff4a7b469aac6f92072536.png)
-
-You can also display the variance of ratings by reviewer
-```sh
-$ python  GKAnalysis.py  visualize  variance --group-by reviewer
-```
-[![N|Solid](http://reho.st/preview/self/0d454af889ec835fd79a4ec13ca2c2c92f913b4f.png)](http://reho.st/view/self/0d454af889ec835fd79a4ec13ca2c2c92f913b4f.png)
-
-Let's zoom on one in particular
-
-```sh
-$ python  GKAnalysis.py  visualize  variance --group-by year -R "Stoon"
-```
-[![N|Solid](http://reho.st/preview/self/9c3a3e911f0c9edf1824adfe49334962cbb8290d.png)](http://reho.st/view/self/9c3a3e911f0c9edf1824adfe49334962cbb8290d.png)
-
-Ever increasing variance interesting.
-
-Other metrics are available, for example you can have a look at wordcount
-
-```sh
-$ python  GKAnalysis.py  visualize  mean --metric wordcount --group-by reviewer
-```
-
-[![N|Solid](http://reho.st/medium/self/c0b18bf8d857bb80cc57fcf389ec3e49bb01169c.png)](http://reho.st/view/self/c0b18bf8d857bb80cc57fcf389ec3e49bb01169c.png)
-
-
-### Online Demo
-
-Soon !
 
 ### Development
 Want to contribute or fork? That's great, go ahead but be remember this is some nice Spaghetti coding ;) ! (i.e Quick & Dirty)

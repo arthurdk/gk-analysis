@@ -6,6 +6,9 @@ import pickle
 import os.path
 import re
 import sys
+from PIL import Image
+import numpy as np
+from os import path
 
 db_file = "gk-list.db"
 db_file2 = "gk-full.db"
@@ -112,6 +115,19 @@ def fetch_parse_nth_first_page(nb_page, force_download, cache):
 
     return reviews
 
+
+def image_url_fetcher(url):
+    response = urllib.urlopen(url)
+    content = response.read()
+    outf = open("tmp-mask", 'wb')
+    outf.write(content)
+    outf.close()
+    d = path.dirname(__file__)
+    return image_fetcher(path.join(d, "tmp-mask"))
+
+
+def image_fetcher(filepath):
+    return np.array(Image.open(filepath))
 
 def fetch_parse_full_tests(force_download, cache, nb_page):
     """
