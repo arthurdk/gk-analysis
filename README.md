@@ -25,10 +25,16 @@ List of dependencies:
  - plotly
  - numpy
  - pickle
+ - matplotlib
+ - image
+ - wordcloud
+ - stop_words
+ - ntlk
+ - pandas
 
 Quick install commands for Ubuntu based system:
 ```sh
-$ pip install beautifulsoup4 plotly numpy pickle
+$ pip install beautifulsoup4 plotly numpy pickle pandas ntlk stop_words wordcloud image matplotlib
 ```
 ### Usage
 
@@ -76,8 +82,9 @@ $ python GKAnalysis.py visualize --help
 ```
 
 ```
-usage: GKAnalysis.py visualize [-h] [-R [reviewers]] [-G by] [-M metric]
-                               [-Y year]
+usage: GKAnalysis.py visualize [-h] [-R [reviewers]] [-Y year]
+                               [--rating-le rating] [--rating-ge rating]
+                               [--rating-eq rating] [-G by] [-M metric]
                                command [command ...]
 
 positional arguments:
@@ -90,6 +97,11 @@ optional arguments:
   -R [reviewers], --reviewers [reviewers]
                         List of reviewers to visualize
                         Example: "Stoon,Gautoz"
+  -Y year, --filter-by-year year
+                        Visualize data for a particular year
+  --rating-le rating    Filter review having ratings less or equals than the given one
+  --rating-ge rating    Filter review having ratings greater or equals than the given one
+  --rating-eq rating    Filter review having a rating equals to the given one
   -G by, --group-by by  Determine how to group by data (Default: data grouped by reviewer)
                         List of options:
                         - reviewer
@@ -100,8 +112,43 @@ optional arguments:
                         - rating
                         - length
                         - wordcount
+```
+
+#### Analyse data
+
+```sh
+$ python GKAnalysis.py analyse --help
+```
+
+
+```
+
+usage: GKAnalysis.py analyse [-h] [-R [reviewers]] [-Y year]
+                             [--rating-le rating] [--rating-ge rating]
+                             [--rating-eq rating] [-G by] [-N [nb_words]]
+                             command [command ...]
+
+positional arguments:
+  command               List of available analysing commands: - words -
+                        sentiment
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -R [reviewers], --reviewers [reviewers]
+                        List of reviewers to visualize Example: "Stoon,Gautoz"
   -Y year, --filter-by-year year
                         Visualize data for a particular year
+  --rating-le rating    Filter review having ratings less or equals than the
+                        given one
+  --rating-ge rating    Filter review having ratings greater or equals than
+                        the given one
+  --rating-eq rating    Filter review having a rating equals to the given one
+  -G by, --group-by by  Determine how to group by data (Default: data grouped
+                        by reviewer) List of options: - reviewer - year
+  -N [nb_words], --nb_words [nb_words]
+                        Number of best ranked words to select (Default: 100)
+
+
 ```
 ### Output examples
 
@@ -112,11 +159,13 @@ Want to contribute or fork? That's great, go ahead but be remember this is some 
 
 ### Todos
  - Write Tests (someday hopefully?)
- - More data visualization
- - Bag of word analysis
+ - Always more way to visualize data
+ - Bag of word analysis (finish the implementation)
  - Deep learning analysis
  - Multiple outputs (ASCII table, CSV support)
  - Group by reviewer AND year at the same time
+ - Group by ratings and display who given the most of each one (or at least display the propotion)
+ - Sentiment analysis by reviewer (need translation for optimality :/)
 
 This project could also support other websites but that's not really what I am personally interested in (I will still welcome PR though).
 

@@ -1,5 +1,7 @@
 import plotly
 from plotly.graph_objs import Scatter, Layout, Bar, Figure
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
 
 '''
@@ -14,9 +16,20 @@ class VisualizationStrategy:
 
 class GKVisualizer:
 
-    def __init__(self, reviewers_filtering, group_by_option='nothing'):
+    def __init__(self, reviewers_filtering, group_by_option='nothing', rating_filters=[]):
         self.reviewers_filtering = reviewers_filtering
         self.group_by = group_by_option
+        self.rating_filters = rating_filters
+
+    @staticmethod
+    def word_cloud(words):
+        wordcloud = WordCloud(background_color='white',
+                              width=1200,
+                              height=1000
+                              ).generate(words)
+        plt.imshow(wordcloud)
+        plt.axis('off')
+        plt.show()
 
     @staticmethod
     def _determine_min_max(reviews, min_date, max_date):
@@ -62,6 +75,11 @@ class GKVisualizer:
             title += " (" + ", ".join(reviewers) + ") "
         return title
 
+    def get_rating_filtered_title(self, title):
+        for opt, rating in self.rating_filters:
+            title += " (" + opt + " " + str(rating) + ")"
+        return title
+
     def group_plot(self, data, labels, title, ylabel):
 
         figure = {
@@ -78,10 +96,6 @@ class GKVisualizer:
                 ),
             )
         }
-        trace = Bar(x=[1, 2, 3], y=[4, 5, 6])
-        data = [trace]
-        layout = Layout(title='My Plot')
-        fig = Figure(data=data, layout=layout)
         plotly.offline.plot(figure)
         # Save the figure as a png image:
         # plotly.plotly.image.save_as(fig, 'my_plot.png')

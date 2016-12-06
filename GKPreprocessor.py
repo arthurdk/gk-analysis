@@ -1,11 +1,48 @@
 from itertools import groupby
 import numpy as np
+from sklearn.feature_extraction.text import CountVectorizer
+from stop_words import get_stop_words
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import chi2
 
 
 class GKPreprocessor:
-    def __init__(self, metric, group_by_option):
+    def __init__(self, metric='wordcount', group_by_option='reviewer'):
         self.group_by = group_by_option
         self.metric = metric
+
+    @staticmethod
+    def construct_bag_of_words(reviews):
+        """
+        Credits: https://www.dataquest.io/blog/natural-language-processing-with-python/
+        :param reviews:
+        :return:
+        """
+        vectorizer = CountVectorizer(lowercase=True, stop_words=get_stop_words('french'))
+        contents = []
+        classes = []
+        for group in reviews:
+            for review in group:
+                contents.append(review.content)
+                classes.append(review.rating)
+        matrix = vectorizer.fit_transform(contents)
+        vocab = [word for word in vectorizer.vocabulary_]
+        return matrix, classes, vocab
+
+    @staticmethod
+    def perform_feature_selection(bag_of_words, classes, nb_words):
+        # TODO Cross validation ;)
+        # feature extraction
+        kbest = SelectKBest(score_func=chi2, k=nb_words)
+        fit = kbest.fit(bag_of_words, classes)
+        top_words = kbest.get_support().nonzero()
+
+        # Pick only the most informative columns in the data.
+
+        # summarize scores
+        # features_train = fit.transform(X_train)
+        # features_val = fit.transform(X_val)
+        return top_words[0].tolist()
 
     def perform_group_by(self, reviews):
         """
@@ -106,3 +143,20 @@ class GKPreprocessor:
         """
         return [x for x in reviews if x.date.year == year]
 
+    @staticmethod
+    def filter_by_rating(reviews, rating_option, rating):
+        """
+
+        :param reviews:
+        :param rating_option:
+        :param rating:
+        :return:
+        """
+        if rating_option == "rating_le":
+            return [x for x in reviews if x.rating <= rating]
+        if rating_option == "rating_ge":
+            return [x for x in reviews if x.rating >= rating]
+        if rating_option == "rating_eq":
+            return [x for x in reviews if x.rating == rating]
+        else:
+            return reviews
