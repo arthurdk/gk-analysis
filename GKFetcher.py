@@ -19,7 +19,7 @@ def represents_int(s):
         return False
 
 
-def fetch_parse_test(url):
+def fetch_parse_test_content(url):
     """
     Spaghetti code retrieving content from a single test
     :param url:
@@ -127,7 +127,7 @@ def fetch_parse_full_tests(force_download, cache, nb_page):
         print("Fetching data..")
         reviews = fetch_parse_nth_first_page(nb_page, force_download=force_download, cache=cache)
         for index, review in enumerate(reviews):
-            review.content = fetch_parse_test(review.link)
+            review.content = fetch_parse_test_content(review.link)
             print("%d/%d" % (index + 1, len(reviews)))
         if cache:
             with open(db_file2, 'wb') as output:
@@ -161,7 +161,7 @@ def main():
     reviews = fetch_parse_nth_first_page(10)
     for review in reviews:
         print review.link
-        review.content = fetch_parse_test(review.link)
+        review.content = fetch_parse_test_content(review.link)
         print(review.content)
         break
 

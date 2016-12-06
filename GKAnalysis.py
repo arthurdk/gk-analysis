@@ -101,7 +101,7 @@ def main():
                 data, anno_labels = getattr(pre_processor,
                                             "grouped_" + method)(reviews, labels)
                 title = visualizer.get_named_title(method + " rating given by GK reviewers", reviewers_filtering)
-                plt.title(visualizer.get_dated_title(title, reviews))
+                title = visualizer.get_dated_title(title, reviews)
                 ylabel = method + " " + args.metric
                 visualizer.group_plot(data=data,
                                       labels=anno_labels,

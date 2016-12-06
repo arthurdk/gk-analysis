@@ -21,16 +21,14 @@ $ wget https://github.com/arthurdk/gk-analysis/archive/master.zip
 
 ### Dependencies
 List of dependencies:
- - python-tk
  - beautifulsoup4
- - matplotlib
+ - plotly
  - numpy
  - pickle
 
 Quick install commands for Ubuntu based system:
 ```sh
-$ apt install python-tk
-$ pip install beautifulsoup4 matplotlib numpy pickle
+$ pip install beautifulsoup4 plotly numpy pickle
 ```
 ### Usage
 
@@ -110,7 +108,7 @@ optional arguments:
 Section not finished yet.
 
 ### Development
-Want to contribute or fork? That's great, go ahead :) !
+Want to contribute or fork? That's great, go ahead but be remember this is some nice Spaghetti coding ;) ! (i.e Quick & Dirty)
 
 ### Todos
  - Write Tests (someday hopefully?)

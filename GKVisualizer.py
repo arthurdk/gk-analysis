@@ -1,5 +1,6 @@
-import matplotlib.pyplot as plt
-import numpy as np
+import plotly
+from plotly.graph_objs import Scatter, Layout, Bar, Figure
+
 
 '''
 class VisualizationStrategy:
@@ -16,8 +17,6 @@ class GKVisualizer:
     def __init__(self, reviewers_filtering, group_by_option='nothing'):
         self.reviewers_filtering = reviewers_filtering
         self.group_by = group_by_option
-
-
 
     @staticmethod
     def _determine_min_max(reviews, min_date, max_date):
@@ -64,37 +63,25 @@ class GKVisualizer:
         return title
 
     def group_plot(self, data, labels, title, ylabel):
-        plt.bar(range(len(data)), data, align='center')
-        plt.xticks(range(len(data)), labels)
-        plt.xlabel(self.group_by)
-        plt.ylabel(ylabel)
-        plt.legend(loc='upper left')
-        plt.title(title)
-        plt.show()
 
-    # Unused anymore
-    def plot_variance(self, reviews):
-        ratings = [list(r.rating for r in reviews)]
-        plt.bar(1, np.var(ratings))
-        plt.xticks(range(1), ["Data"])
-        plt.xlabel(self.group_by)
-        plt.ylabel("Variance ")
-        plt.legend(loc='upper left')
-        title = self.get_named_title("Variance of the ratings given by GK reviewers", self.reviewers_filtering)
-        plt.title(self.get_dated_title(title, reviews))
-        plt.show()
-
-    # Unused anymore
-    def plot_mean(self, reviews):
-
-        ratings = [x.rating for x in reviews]
-        mean = np.mean(ratings)
-
-        plt.bar(range(1), mean, align='center')
-        plt.xticks(range(1), ["Data"])
-        plt.xlabel(self.group_by)
-        plt.ylabel("Mean rating")
-        plt.legend(loc='upper left')
-        title = self.get_named_title("Mean rating given by GK reviewers", self.reviewers_filtering)
-        plt.title(self.get_dated_title(title, reviews))
-        plt.show()
+        figure = {
+            "data": [
+                Bar(x=labels, y=data)
+            ],
+            "layout": Layout(
+                title=title,
+                xaxis=dict(
+                    title=self.group_by
+                ),
+                yaxis=dict(
+                    title=ylabel
+                ),
+            )
+        }
+        trace = Bar(x=[1, 2, 3], y=[4, 5, 6])
+        data = [trace]
+        layout = Layout(title='My Plot')
+        fig = Figure(data=data, layout=layout)
+        plotly.offline.plot(figure)
+        # Save the figure as a png image:
+        # plotly.plotly.image.save_as(fig, 'my_plot.png')

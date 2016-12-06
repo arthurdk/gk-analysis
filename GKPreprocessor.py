@@ -3,11 +3,16 @@ import numpy as np
 
 
 class GKPreprocessor:
-    def __init__(self, metric, group_by_option='nothing'):
+    def __init__(self, metric, group_by_option):
         self.group_by = group_by_option
         self.metric = metric
 
     def perform_group_by(self, reviews):
+        """
+        Group review following the group_by attr
+        :param reviews:
+        :return:
+        """
         if self.group_by == "reviewer":
             return self._actual_group_by(reviews, "reviewer")
         elif self.group_by == "year":
@@ -16,6 +21,12 @@ class GKPreprocessor:
             return reviews, []
 
     def grouped_mean(self, grouped_reviews, labels):
+        """
+        Compute the mean of each group
+        :param grouped_reviews:
+        :param labels:
+        :return:
+        """
         means = []
         annotated_labels = list(labels)
         for index, group in enumerate(grouped_reviews):
@@ -29,6 +40,12 @@ class GKPreprocessor:
         return means, annotated_labels
 
     def grouped_variance(self, grouped_reviews, labels):
+        """
+        Compute the variance of each group
+        :param grouped_reviews:
+        :param labels:
+        :return:
+        """
         metrics = []
         variances = []
         annotated_labels = list(labels)
@@ -59,7 +76,6 @@ class GKPreprocessor:
                 groups.append(list(g))  # Store group iterator as a list
                 labels.append(k)
 
-        print(labels)
         return groups, labels
 
     @staticmethod
