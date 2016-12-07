@@ -87,7 +87,7 @@ $ python GKAnalysis.py analyse words --mask-url \
 You can also write a review (or just some text) and it will tell you the most probable GK reviewer that could have written this review
 
 ```sh
-$ python GKAnalysis.py analyse prediction reviewer ./path-to-file -N 1000
+$ python GKAnalysis.py analyse predict reviewer ./path-to-file -N 1000
 ```
 
 In this example the file contained a review from Gameblog, sorry Gautoz :/
@@ -98,7 +98,7 @@ In this example the file contained a review from Gameblog, sorry Gautoz :/
 Let's see how this review would have been rated on Gamekult.
 
 ```sh
-$ python GKAnalysis.py analyse prediction rating ./path-to-file -N 1000
+$ python GKAnalysis.py analyse predict rating ./path-to-file -N 1000
 ```
 
 
@@ -407,13 +407,14 @@ Want to contribute or fork? That's great, go ahead but be remember this is some 
 ### Todos
  - Write Tests (someday hopefully?)
  - Always more way to visualize data
- - Bag of word analysis (finish the implementation)
- - Deep learning analysis
+ - Deep learning analysis => write review automatically given parameters (rating, reviewers) ;)
  - Multiple outputs (ASCII table, CSV support)
- - Group by ratings and display who given the most of each one (or at least display the propotion)
+ - Group by ratings and display who given the most of each one (or at least display the proportion)
  - Sentiment analysis by reviewer (need translation for optimality :/)
  - Make the code more generic (as of now it more a script than a program)
- - Use data structure instead of list of list for clarity...
+ - Choose between multiple feature selection method (RFE ;))
+ - Make use of homemade enums instead of hardcoded strings...
+ - Python 3 ?
 
 This project could also support other websites but that's not really what I am personally interested in (I will still welcome PR though).
 

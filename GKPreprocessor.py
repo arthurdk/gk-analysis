@@ -23,6 +23,7 @@ class GKPreprocessor:
             for review in group:
                 contents.append(review.content)
                 classes.append(getattr(review, class_attr))
+
         matrix = vectorizer.fit_transform(contents)
         vocab = np.array([word for word in vectorizer.vocabulary_])
         return matrix.todense(), classes, vocab

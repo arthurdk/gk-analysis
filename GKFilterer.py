@@ -30,7 +30,6 @@ class GKFilterer:
         if args.rating_eq is not None:
             reviews = self.filter_by_attribute(reviews, cmp_item=args.rating_eq, cmp_option="eq", attr="rating")
             self.rating_filters.append(("=", args.rating_eq))
-
         return reviews
 
     @staticmethod
