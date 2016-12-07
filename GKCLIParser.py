@@ -2,7 +2,6 @@ import argparse
 
 
 class GKCLIParser:
-
     def __init__(self):
         self.DEFAULT_NB_PAGE = 10
 
@@ -63,8 +62,8 @@ class GKCLIParser:
         parser_analyse = subparsers.add_parser('analyse', help='Analyse data see help for more information',
                                                parents=[parent_parser, analyse_parent_parser])
         analyse_parent_parser.add_argument('-N', '--nb_words', metavar="nb_words", type=int,
-                                    help="Number of best ranked words to select (Default: 100)",
-                                    default=100, nargs='?')
+                                           help="Number of best ranked words to select (Default: 100)",
+                                           default=500, nargs='?')
         sub_parser_analyse = parser_analyse.add_subparsers(help='Available analyse commands', dest='analyse_commands')
 
         ## Word cloud command
@@ -83,14 +82,13 @@ class GKCLIParser:
         parser_review = sub_parser_analyse.add_parser('review', help='See review help for more information',
                                                       formatter_class=argparse.RawTextHelpFormatter,
                                                       parents=[parent_parser, analyse_parent_parser])
+        prediction_choices = ["reviewer", "rating"]
+        parser_review.add_argument('predict_target', metavar='prediction',
+                                   help="Choose which elment do you want to make prediction on "
+                                        "\nList of options:\n- " + "\n- ".join(prediction_choices),
+                                   choices=prediction_choices)
         parser_review.add_argument('review_path', metavar='filepath',
                                    help="Path to the review to analyse")
-        '''
-        analyse_command = ["words", "sentiment", "review"]
-        parser_analyse.add_argument('analyse_command', metavar='command', nargs="+",
-                                    help="List of available analysing commands: \n"
-                                         "- " + "\n- ".join(analyse_command),
-                                    choices=analyse_command)
-        '''
+
         # Actual parsing
         return parser.parse_args()

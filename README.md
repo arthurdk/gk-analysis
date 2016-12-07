@@ -60,11 +60,14 @@ $ python  GKAnalysis.py  visualize  mean --metric wordcount --group-by reviewer
 The tool also support mask system for the word cloud, a customizable background and color set
 
 ```sh
-$ python GKAnalysis.py analyse words --mask-url https://pre00.deviantart.net/4ae0/th/pre/f/2015/208/e/4/batman_logo_simple_by_animedark2-d933xx7.jpg --nb_words 200 --word-cloud-bg black --word-cloud-color-scheme whatever --rating-le 3
+$ python GKAnalysis.py analyse words --mask-url \
+ https://pre00.deviantart.net/4ae0/th/pre/f/2015/208/e/4/batman_logo_simple_by_animedark2-d933xx7.jpg \
+ --nb_words 200 --word-cloud-bg black \
+ --word-cloud-color-scheme whatever --rating-le 3
 
 ```
 
-[![N|Solid](http://reho.st/medium/self/a71eaac567ff912dbf667a9ab7e9e5b3b3adc69e.png)](http://reho.st/view/self/a71eaac567ff912dbf667a9ab7e9e5b3b3adc69e.png)
+[![N|Solid](http://reho.st/medium/self/f6b6db5184452c40d46281fe53256c6e7c8ec29f.png)](http://reho.st/view/self/f6b6db5184452c40d46281fe53256c6e7c8ec29f.png)
 
 
 Previous word cloud, all GK reviews were included (at least the 20 last page of tests), on the next one only Stoon's for comparison.
@@ -77,7 +80,30 @@ $ python GKAnalysis.py analyse words --mask-url \
 
 ```
 
-[![N|Solid](http://reho.st/medium/self/f18d051d6820765c9c640c3fa96d556ef6151d07.png)](http://reho.st/view/self/f18d051d6820765c9c640c3fa96d556ef6151d07.png)
+[![N|Solid](http://reho.st/medium/self/3eb89e267e6299cea2e6c413b6bc98e17803608d.png)](http://reho.st/view/self/3eb89e267e6299cea2e6c413b6bc98e17803608d.png)
+
+
+You can also write a review (or just some text) and it will tell you the most probable GK reviewer that could have written this review
+
+```sh
+$ python GKAnalysis.py analyse review reviewer ./path-to-file -N 1000
+```
+
+In this example the file contained a review from Gameblog, sorry Gautoz :/
+
+[![N|Solid](http://reho.st/medium/self/b8c83453c9c9097fbf81fb58d7cc49080aa6fe6c.png)](http://reho.st/view/self/b8c83453c9c9097fbf81fb58d7cc49080aa6fe6c.png)
+
+Let's see how this review would have been rated on Gamekult.
+
+```sh
+$ python GKAnalysis.py analyse review rating ./path-to-file -N 1000
+```
+
+
+
+[![N|Solid](http://reho.st/medium/self/33ce4ccd504993ff1617eb54eb471adea565ba1e.png)](http://reho.st/view/self/33ce4ccd504993ff1617eb54eb471adea565ba1e.png)
+
+7 wow. But rest assured it's probably because it's an extract of a Deus Ex MD review which was well rated on GK.
 
 
 ### Online Demo
@@ -104,12 +130,13 @@ List of dependencies: (there are way too much I know)
  - image
  - wordcloud
  - stop_words
- - nltk
+ - nltk (not for now)
  - pandas
+ - sklearn
 
 Quick install commands for Ubuntu based system:
 ```sh
-$ pip install beautifulsoup4 plotly numpy pandas nltk stop_words wordcloud image matplotlib
+$ pip install beautifulsoup4 plotly numpy pandas nltk stop_words wordcloud image sklearn matplotlib
 ```
 ### Usage
 
@@ -201,15 +228,12 @@ $ python GKAnalysis.py analyse --help
 usage: GKAnalysis.py analyse [-h] [-R [reviewers]] [-Y year]
                              [--rating-le rating] [--rating-ge rating]
                              [--rating-eq rating] [-G by]
-                             [--mask-url url | --mask-path path-to-file]
-                             [--word-cloud-bg color]
-                             [--word-cloud-color-scheme color_scheme]
-                             [-N [nb_words]]
-                             command [command ...]
+                             {words,review} ...
 
 positional arguments:
-  command               List of available analysing commands: - words -
-                        sentiment
+  {words,review}        Available analyse commands
+    words               See words help for more information
+    review              See review help for more information
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -224,17 +248,90 @@ optional arguments:
   --rating-eq rating    Filter review having a rating equals to the given one
   -G by, --group-by by  Determine how to group by data (Default: data grouped
                         by reviewer) List of options: - reviewer - year
-  --mask-url url        URL of a mask for the wordcloud
-  --mask-path path-to-file
-                        Path to a mask for the wordcloud
+
+
+```
+
+##### Words
+
+This command allows to produce a word cloud of the most important words in selected reviews.
+
+```sh
+$ python GKAnalysis.py analyse  words --help
+```
+
+
+```
+usage: GKAnalysis.py analyse words [-h] [-R [reviewers]] [-Y year]
+                                   [--rating-le rating] [--rating-ge rating]
+                                   [--rating-eq rating] [-G by]
+                                   [-N [nb_words]] [--word-cloud-bg color]
+                                   [--word-cloud-color-scheme color_scheme]
+                                   [--mask-url url | --mask-path path-to-file]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -R [reviewers], --reviewers [reviewers]
+                        List of reviewers to visualize
+                        Example: "Stoon,Gautoz"
+  -Y year, --filter-by-year year
+                        Visualize data for a particular year
+  --rating-le rating    Filter review having ratings less or equals than the given one
+  --rating-ge rating    Filter review having ratings greater or equals than the given one
+  --rating-eq rating    Filter review having a rating equals to the given one
+  -G by, --group-by by  Determine how to group by data (Default: data grouped by reviewer)
+                        List of options:
+                        - reviewer
+                        - year
+  -N [nb_words], --nb_words [nb_words]
+                        Number of best ranked words to select (Default: 100)
   --word-cloud-bg color
                         Background color for the word cloud Example: black
   --word-cloud-color-scheme color_scheme
-                        Color scheme for the word cloud (anything only grey is
-                        supported for now)
+                        Color scheme for the word cloud (anything only grey is supported for now)
+  --mask-url url        URL of a mask for the wordcloud
+  --mask-path path-to-file
+                        Path to a mask for the wordcloud
+
+
+```
+
+
+##### Review
+
+This command allows to predict the rating, of the GK reviewer of a text (input)
+
+```
+
+usage: GKAnalysis.py analyse review [-h] [-R [reviewers]] [-Y year]
+                                    [--rating-le rating] [--rating-ge rating]
+                                    [--rating-eq rating] [-G by]
+                                    [-N [nb_words]]
+                                    prediction filepath
+
+positional arguments:
+  prediction            Choose which elment do you want to make prediction on
+                        List of options:
+                        - reviewer
+                        - rating
+  filepath              Path to the review to analyse
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -R [reviewers], --reviewers [reviewers]
+                        List of reviewers to visualize
+                        Example: "Stoon,Gautoz"
+  -Y year, --filter-by-year year
+                        Visualize data for a particular year
+  --rating-le rating    Filter review having ratings less or equals than the given one
+  --rating-ge rating    Filter review having ratings greater or equals than the given one
+  --rating-eq rating    Filter review having a rating equals to the given one
+  -G by, --group-by by  Determine how to group by data (Default: data grouped by reviewer)
+                        List of options:
+                        - reviewer
+                        - year
   -N [nb_words], --nb_words [nb_words]
                         Number of best ranked words to select (Default: 100)
-
 
 ```
 

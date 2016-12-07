@@ -61,6 +61,86 @@ class GKVisualizer:
         plt.show()
 
     @staticmethod
+    def display_gauge(labels, target):
+
+        value = 100.0 / len(labels)
+        values = [value] * len(labels)
+
+        base_chart = {
+            "values": values,
+            "domain": {"x": [0, .48]},
+            "marker": {
+                "line": {
+                    "width": 1
+                }
+            },
+            "name": "Gauge",
+            "hole": .4,
+            "type": "pie",
+            "direction": "clockwise",
+            "showlegend": False,
+            "hoverinfo": "none",
+            "textinfo": "none",
+            "textposition": "outside"
+        }
+
+        meter_chart = {
+            "values": values,
+            "labels": labels,
+            'textfont': {
+                "size": 22,
+                "color": "white"
+
+            },
+            "domain": {"x": [0, 0.48]},
+            "name": "Gauge",
+            "hole": .3,
+            "type": "pie",
+            "direction": "clockwise",
+            "showlegend": False,
+            "textinfo": "label",
+            "textposition": "inside",
+            "hoverinfo": "none"
+        }
+
+        layout = {
+            'xaxis': {
+                'showticklabels': False,
+                'autotick': False,
+                'showgrid': False,
+                'zeroline': False,
+            },
+            'yaxis': {
+                'showticklabels': False,
+                'autotick': False,
+                'showgrid': False,
+                'zeroline': False,
+            },
+            'annotations': [
+                {
+                    'xref': 'paper',
+                    'yref': 'paper',
+                    'x': 0.23,
+                    'y': 0.5,
+                    'text': target,
+                    'font': {
+                        "size": 22,
+                        "color": "black"
+                    },
+                    'showarrow': False
+                }
+            ]
+        }
+
+        # apparently we don't want the boundary now
+        base_chart['marker']['line']['width'] = 0
+
+        fig = {"data": [base_chart, meter_chart],
+               "layout": layout}
+        plotly.offline.plot(fig)
+
+
+    @staticmethod
     def _determine_min_max(reviews, min_date, max_date):
         for review in reviews:
             if min_date > review.date:

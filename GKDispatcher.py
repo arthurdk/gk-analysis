@@ -1,6 +1,6 @@
 import GKFetcher as GKFetcher
-import GKReview as GKReview
-import GKClassifier as GKClassifier
+from GKReview import *
+from GKClassifier import *
 
 
 class GKDispatcher:
@@ -10,6 +10,7 @@ class GKDispatcher:
         self.feat_selector = feat_selector
         self.args = args
         self.visualizer = visualizer
+        self.classifier = GKClassifier()
 
     def dispatch(self, reviews, labels):
         getattr(self, "dispatch_" + self.args.command)(reviews, labels)
@@ -43,7 +44,7 @@ class GKDispatcher:
                 content = review_file.read()
             to_predict[0].content = content
             reviews.append(to_predict)  # inject the fake new group
-            bag_of_words, classes, vocab = self.pre_processor.construct_bag_of_words(reviews, "reviewer")
+            bag_of_words, classes, vocab = self.pre_processor.construct_bag_of_words(reviews, self.args.predict_target)
             # Create hash of class label as it's not working with string
             processed_classes = [hash(label) for label in classes]
             # toDO the review to predict SHOULD NOT be in the feature selection process !!!!
@@ -52,13 +53,17 @@ class GKDispatcher:
             # Keep best ranked features
             processed_bag_of_words = bag_of_words[:, mask_array]
             # Predict the newly added feature
-            result = GKClassifier.predict_reviewer(features=processed_bag_of_words, classes=processed_classes)
+            result = self.classifier.predict_reviewer(features=processed_bag_of_words, classes=processed_classes)
             prediction = []
             # Search for the true label
             for idx, label in enumerate(processed_classes):
                 if label == result:
                     prediction = classes[idx]
-            print("You are like ", prediction)
+            print("Prediction ", prediction)
+
+            classes.remove(getattr(review, self.args.predict_target))
+            classes = list(set(classes))
+            self.visualizer.display_gauge(classes, prediction)
 
     def dispatch_visualize(self, reviews, labels):
         self.pre_processor.metric = self.args.metric
