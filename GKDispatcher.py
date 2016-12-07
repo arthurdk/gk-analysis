@@ -89,12 +89,12 @@ class GKDispatcher:
                     print("Group by ignored for now ")  # TODO fix this non generic code :(
 
                     dates = [review.date for review in reviews]
-                    labels = [review.rating for review in reviews]
-                    title = self.visualizer.get_named_title("Scatter plot of review according to rating "
-                                                            "and date given by GK reviewers",
+                    labels = [review.get_metric(self.args.metric) for review in reviews]
+                    title = self.visualizer.get_named_title("Scatter plot of review according to %s "
+                                                            "and date given by GK reviewers" % self.args.metric,
                                                             self.filterer.reviewers_filtering)
                     title = self.visualizer.get_rating_filtered_title(title)
-                    self.visualizer.scatter(x=dates, y=labels, title=title)
+                    self.visualizer.scatter(x=dates, y=labels, title=title, ylabel=self.args.metric)
 
                 else:
                     # Perform Group By

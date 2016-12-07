@@ -118,6 +118,8 @@ $ python GKAnalysis.py analyse visualize scatter
 
 [![N|Solid](http://reho.st/medium/self/bf74b50e74493ed2dfa3d68527dd86e6f62b66ac.png)](http://reho.st/view/self/bf74b50e74493ed2dfa3d68527dd86e6f62b66ac.png)
 
+Interactive version: [https://cdn.rawgit.com/arthurdk/gk-analysis/master/examples/scatter_rating_date.html](https://cdn.rawgit.com/arthurdk/gk-analysis/master/examples/scatter_rating_date.html)
+
 
 And it is still possible to use filter !
 

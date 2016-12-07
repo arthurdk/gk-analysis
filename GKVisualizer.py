@@ -233,11 +233,11 @@ class GKVisualizer:
         plotly.offline.plot(fig)
 
     @staticmethod
-    def scatter(x, y, title):
+    def scatter(x, y, title, ylabel):
 
         layout = dict(title=title,
                       yaxis=dict(
-                          title="Rating")
+                          title=ylabel)
                       ,
                       xaxis=dict(
                           title="Date")
