@@ -20,8 +20,12 @@ class GKCLIParser:
         parent_parser.add_argument('-R', '--reviewers', metavar='reviewers', nargs="?",
                                    help='List of reviewers to visualize \n'
                                         'Example: "Stoon,Gautoz"', type=str)
-        parent_parser.add_argument('-Y', '--filter-by-year', metavar='year', type=int,
-                                   help='Visualize data for a particular year')
+        parent_parser.add_argument('--year-le', metavar='year', type=int,
+                                   help='Filter review being less recent or of the given year')
+        parent_parser.add_argument('--year-ge', metavar='year', type=int,
+                                   help='Filter review being more recent or of the given year')
+        parent_parser.add_argument('--year-eq', metavar='year', type=int,
+                                   help='Filter review being the given year')
         parent_parser.add_argument('--rating-le', metavar='rating', type=int,
                                    help='Filter review having ratings less or equals than the given one')
         parent_parser.add_argument('--rating-ge', metavar='rating', type=int,
@@ -60,9 +64,10 @@ class GKCLIParser:
         # Analyse parser
         analyse_parent_parser = argparse.ArgumentParser(add_help=False)
         parser_analyse = subparsers.add_parser('analyse', help='Analyse data see help for more information',
-                                               parents=[parent_parser, analyse_parent_parser])
+                                               parents=[parent_parser, analyse_parent_parser],
+                                               formatter_class=argparse.RawTextHelpFormatter)
         analyse_parent_parser.add_argument('-N', '--nb_words', metavar="nb_words", type=int,
-                                           help="Number of best ranked words to select (Default: 100)",
+                                           help="Number of best ranked words to select (Default: 500)",
                                            default=500, nargs='?')
         sub_parser_analyse = parser_analyse.add_subparsers(help='Available analyse commands', dest='analyse_commands')
 
@@ -79,7 +84,7 @@ class GKCLIParser:
         group.add_argument('--mask-path', metavar='path-to-file', help='Path to a mask for the wordcloud')
 
         ## Review command
-        parser_prediction = sub_parser_analyse.add_parser('prediction', help='See prediction help for more information',
+        parser_prediction = sub_parser_analyse.add_parser('predict', help='See prediction help for more information',
                                                       formatter_class=argparse.RawTextHelpFormatter,
                                                       parents=[parent_parser, analyse_parent_parser])
         prediction_choices = ["reviewer", "rating"]

@@ -40,7 +40,7 @@ class GKDispatcher:
             self.visualizer.word_cloud_color_scheme = self.args.word_cloud_color_scheme
             self.visualizer.word_cloud(zip(top_words, scores), mask=mask)
 
-        elif "prediction" in self.args.analyse_commands:
+        elif "predict" in self.args.analyse_commands:
 
             # Insert a new group with the review to predict
             review = GKReview(reviewer='Unknown')
@@ -104,7 +104,6 @@ class GKDispatcher:
                     data, annotated_labels = self.pre_processor.grouped_stats(gk_grouped_reviews, method)
 
                     if gk_grouped_reviews.get_depth() == 1:
-                        print("test")
                         title = self.visualizer.get_named_title(method + " " + self.args.metric + " given by GK reviewers",
                                                                 self.filterer.reviewers_filtering)
                         title = self.visualizer.get_dated_title(title, gk_grouped_reviews.grouped_reviews)

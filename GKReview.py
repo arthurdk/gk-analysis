@@ -17,6 +17,9 @@ class GKReview:
     def get_year(self):
         return self.date.year
 
+    def get_rating(self):
+        return self.date.year
+
     def get_reviewer(self):
         return self.reviewer
 

@@ -51,15 +51,11 @@ class GKPreprocessor:
             for label_list in gk_grouped_reviews.second_level_labels:
                 full_labels += label_list
             full_labels = list(set(full_labels))
-            print(full_labels)
             _, option2 = self.group_by.split("_")
             stats = np.zeros(shape=(len(grouped_reviews), len(full_labels)))
-            print(stats.shape)
             # annotated_labels = list(labels)
             for first_index, first_group in enumerate(grouped_reviews):
-                print("f", first_index, first_group[0][0].date.year)
                 for second_index, second_group in enumerate(first_group):
-                    print("s", second_index, second_group[0].reviewer)
                     metrics = [x.get_metric(self.metric) for x in second_group]
 
                     getter = getattr(second_group[0], "get_"+option2)
@@ -68,9 +64,8 @@ class GKPreprocessor:
                     elif method == "mean":
                         stats[first_index][full_labels.index(getter())] = np.mean(metrics)
 
-                    print(stats)
                     # Label annotation
-            return stats, full_labels
+            return stats, full_labels  # todo annotate labels
 
     def grouped_mean(self, gk_grouped_reviews):
         self.grouped_stats()

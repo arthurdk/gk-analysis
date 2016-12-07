@@ -222,7 +222,9 @@ $ python GKAnalysis.py visualize --help
 ```
 
 ```
-usage: GKAnalysis.py visualize [-h] [-R [reviewers]] [-Y year]
+
+usage: GKAnalysis.py visualize [-h] [-R [reviewers]] [--year-le year]
+                               [--year-ge year] [--year-eq year]
                                [--rating-le rating] [--rating-ge rating]
                                [--rating-eq rating] [-G [by]] [-M metric]
                                command [command ...]
@@ -238,12 +240,14 @@ optional arguments:
   -R [reviewers], --reviewers [reviewers]
                         List of reviewers to visualize
                         Example: "Stoon,Gautoz"
-  -Y year, --filter-by-year year
-                        Visualize data for a particular year
+  --year-le year        Filter review being less recent or of the given year
+  --year-ge year        Filter review being more recent or of the given year
+  --year-eq year        Filter review being the given year
   --rating-le rating    Filter review having ratings less or equals than the given one
   --rating-ge rating    Filter review having ratings greater or equals than the given one
   --rating-eq rating    Filter review having a rating equals to the given one
- -G by, --group-by by  Determine how to group by data (Default: data grouped by reviewer)
+  -G [by], --group-by [by]
+                        Determine how to group by data (Default: data grouped by reviewer)
                         List of options:
                         - reviewer
                         - year
@@ -255,6 +259,7 @@ optional arguments:
                         - rating
                         - length
                         - wordcount
+
 ```
 
 #### Analyse data
@@ -266,33 +271,36 @@ $ python GKAnalysis.py analyse --help
 
 ```
 
-usage: GKAnalysis.py analyse [-h] [-R [reviewers]] [-Y year]
+usage: GKAnalysis.py analyse [-h] [-R [reviewers]] [--year-le year]
+                             [--year-ge year] [--year-eq year]
                              [--rating-le rating] [--rating-ge rating]
-                             [--rating-eq rating] [-G by]
+                             [--rating-eq rating] [-G [by]]
                              {words,prediction} ...
 
 positional arguments:
-  {words,prediction}        Available analyse commands
+  {words,prediction}    Available analyse commands
     words               See words help for more information
     prediction          See prediction help for more information
 
 optional arguments:
   -h, --help            show this help message and exit
   -R [reviewers], --reviewers [reviewers]
-                        List of reviewers to visualize Example: "Stoon,Gautoz"
-  -Y year, --filter-by-year year
-                        Visualize data for a particular year
-  --rating-le rating    Filter review having ratings less or equals than the
-                        given one
-  --rating-ge rating    Filter review having ratings greater or equals than
-                        the given one
+                        List of reviewers to visualize
+                        Example: "Stoon,Gautoz"
+  --year-le year        Filter review being less recent or of the given year
+  --year-ge year        Filter review being more recent or of the given year
+  --year-eq year        Filter review being the given year
+  --rating-le rating    Filter review having ratings less or equals than the given one
+  --rating-ge rating    Filter review having ratings greater or equals than the given one
   --rating-eq rating    Filter review having a rating equals to the given one
-  -G by, --group-by by  Determine how to group by data (Default: data grouped by reviewer)
+  -G [by], --group-by [by]
+                        Determine how to group by data (Default: data grouped by reviewer)
                         List of options:
                         - reviewer
                         - year
                         - reviewer_year
                         - year_reviewer
+
 
 
 ```
@@ -307,9 +315,10 @@ $ python GKAnalysis.py analyse  words --help
 
 
 ```
-usage: GKAnalysis.py analyse words [-h] [-R [reviewers]] [-Y year]
+usage: GKAnalysis.py analyse words [-h] [-R [reviewers]] [--year-le year]
+                                   [--year-ge year] [--year-eq year]
                                    [--rating-le rating] [--rating-ge rating]
-                                   [--rating-eq rating] [-G by]
+                                   [--rating-eq rating] [-G [by]]
                                    [-N [nb_words]] [--word-cloud-bg color]
                                    [--word-cloud-color-scheme color_scheme]
                                    [--mask-url url | --mask-path path-to-file]
@@ -319,12 +328,14 @@ optional arguments:
   -R [reviewers], --reviewers [reviewers]
                         List of reviewers to visualize
                         Example: "Stoon,Gautoz"
-  -Y year, --filter-by-year year
-                        Visualize data for a particular year
+  --year-le year        Filter review being less recent or of the given year
+  --year-ge year        Filter review being more recent or of the given year
+  --year-eq year        Filter review being the given year
   --rating-le rating    Filter review having ratings less or equals than the given one
   --rating-ge rating    Filter review having ratings greater or equals than the given one
   --rating-eq rating    Filter review having a rating equals to the given one
-  -G by, --group-by by  Determine how to group by data (Default: data grouped by reviewer)
+  -G [by], --group-by [by]
+                        Determine how to group by data (Default: data grouped by reviewer)
                         List of options:
                         - reviewer
                         - year
@@ -341,23 +352,26 @@ optional arguments:
                         Path to a mask for the wordcloud
 
 
+
 ```
 
 
-##### Review
+##### Prediction of your text
 
 This command allows to predict the rating, of the GK reviewer of a text (input)
 
 ```
 
-usage: GKAnalysis.py analyse review [-h] [-R [reviewers]] [-Y year]
-                                    [--rating-le rating] [--rating-ge rating]
-                                    [--rating-eq rating] [-G by]
-                                    [-N [nb_words]]
-                                    prediction filepath
+usage: GKAnalysis.py analyse predict [-h] [-R [reviewers]] [--year-le year]
+                                        [--year-ge year] [--year-eq year]
+                                        [--rating-le rating]
+                                        [--rating-ge rating]
+                                        [--rating-eq rating] [-G [by]]
+                                        [-N [nb_words]]
+                                        prediction filepath
 
 positional arguments:
-  prediction            Choose which elment do you want to make prediction on
+  predict               Choose which element do you want to make prediction on
                         List of options:
                         - reviewer
                         - rating
@@ -368,12 +382,14 @@ optional arguments:
   -R [reviewers], --reviewers [reviewers]
                         List of reviewers to visualize
                         Example: "Stoon,Gautoz"
-  -Y year, --filter-by-year year
-                        Visualize data for a particular year
+  --year-le year        Filter review being less recent or of the given year
+  --year-ge year        Filter review being more recent or of the given year
+  --year-eq year        Filter review being the given year
   --rating-le rating    Filter review having ratings less or equals than the given one
   --rating-ge rating    Filter review having ratings greater or equals than the given one
   --rating-eq rating    Filter review having a rating equals to the given one
-  -G by, --group-by by  Determine how to group by data (Default: data grouped by reviewer)
+  -G [by], --group-by [by]
+                        Determine how to group by data (Default: data grouped by reviewer)
                         List of options:
                         - reviewer
                         - year
@@ -381,6 +397,7 @@ optional arguments:
                         - year_reviewer
   -N [nb_words], --nb_words [nb_words]
                         Number of best ranked words to select (Default: 100)
+
 
 ```
 

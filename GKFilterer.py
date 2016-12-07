@@ -6,23 +6,29 @@ class GKFilterer:
         self.rating_filters = []
 
     def do_filter(self, reviews, args):
-        if args.filter_by_year is not None:
-            reviews = self.filter_by_year(reviews, args.filter_by_year)
+        if args.year_le is not None:
+            reviews = self.filter_by_attribute(reviews, cmp_item=args.year_le, cmp_option="le", attr="year")
+
+        if args.year_eq is not None:
+            reviews = self.filter_by_attribute(reviews, cmp_item=args.year_eq, cmp_option="le", attr="year")
+
+        if args.year_ge is not None:
+            reviews = self.filter_by_attribute(reviews, cmp_item=args.year_ge, cmp_option="le", attr="year")
 
         if args.reviewers is not None:
             self.reviewers_filtering = args.reviewers.split(",")
             reviews = self.filter_by_reviewers(reviews, self.reviewers_filtering)
 
         if args.rating_le is not None:
-            reviews = self.filter_by_rating(reviews, rating=args.rating_le, rating_option="rating_le")
+            reviews = self.filter_by_attribute(reviews, cmp_item=args.rating_le, cmp_option="le", attr="rating")
             self.rating_filters.append(("<=", args.rating_le))
 
         if args.rating_ge is not None:
-            reviews = self.filter_by_rating(reviews, rating=args.rating_ge, rating_option="rating_ge")
+            reviews = self.filter_by_attribute(reviews, cmp_item=args.rating_ge, cmp_option="ge", attr="rating")
             self.rating_filters.append((">=", args.rating_ge))
 
         if args.rating_eq is not None:
-            reviews = self.filter_by_rating(reviews, rating=args.rating_eq, rating_option="rating_eq")
+            reviews = self.filter_by_attribute(reviews, cmp_item=args.rating_eq, cmp_option="eq", attr="rating")
             self.rating_filters.append(("=", args.rating_eq))
 
         return reviews
@@ -38,29 +44,20 @@ class GKFilterer:
         return [x for x in reviews if x.reviewer in selected_reviewers]
 
     @staticmethod
-    def filter_by_year(reviews, year):
-        """
-        Filter reviews for the year given
-        :param reviews:
-        :param year:
-        :return: Filtered reviews
-        """
-        return [x for x in reviews if x.date.year == year]
-
-    @staticmethod
-    def filter_by_rating(reviews, rating_option, rating):
+    def filter_by_attribute(reviews, cmp_option, cmp_item, attr):
         """
 
         :param reviews:
-        :param rating_option:
-        :param rating:
+        :param cmp_option:
+        :param cmp_item:
+        :param attr:
         :return:
         """
-        if rating_option == "rating_le":
-            return [x for x in reviews if x.rating <= rating]
-        if rating_option == "rating_ge":
-            return [x for x in reviews if x.rating >= rating]
-        if rating_option == "rating_eq":
-            return [x for x in reviews if x.rating == rating]
+        if cmp_option == "le":
+            return [x for x in reviews if getattr(x, "get_" + attr)() <= cmp_item]
+        if cmp_option == "ge":
+            return [x for x in reviews if getattr(x, "get_" + attr)() >= cmp_item]
+        if cmp_option == "eq":
+            return [x for x in reviews if getattr(x, "get_" + attr)() == cmp_item]
         else:
             return reviews
