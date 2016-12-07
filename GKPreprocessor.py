@@ -32,17 +32,6 @@ class GKPreprocessor:
         vocab = np.array([word for word in vectorizer.vocabulary_])
         return matrix.todense(), classes, vocab
 
-    @staticmethod
-    def perform_feature_selection(bag_of_words, classes, nb_words):
-        # TODO Cross validation ;)
-        # feature selection
-        print("Performing feature selection on ", bag_of_words.shape[0], " reviews")
-        selector = SelectKBest(chi2, k=nb_words)
-        selector.fit(bag_of_words, classes)
-        scores = -np.log10(selector.pvalues_)
-        selector.fit(bag_of_words, classes)
-        return selector.get_support(), scores[selector.get_support()]
-
     def perform_group_by(self, reviews):
         """
         Group review following the group_by attr
@@ -121,41 +110,3 @@ class GKPreprocessor:
     @staticmethod
     def in_range(reviews, begin, end):
         return []
-
-    @staticmethod
-    def filter_by_reviewers(reviews, selected_reviewers):
-        """
-        Filter reviews by the reviewers given
-        :param reviews:
-        :param selected_reviewers:
-        :return:
-        """
-        return [x for x in reviews if x.reviewer in selected_reviewers]
-
-    @staticmethod
-    def filter_by_year(reviews, year):
-        """
-        Filter reviews for the year given
-        :param reviews:
-        :param year:
-        :return: Filtered reviews
-        """
-        return [x for x in reviews if x.date.year == year]
-
-    @staticmethod
-    def filter_by_rating(reviews, rating_option, rating):
-        """
-
-        :param reviews:
-        :param rating_option:
-        :param rating:
-        :return:
-        """
-        if rating_option == "rating_le":
-            return [x for x in reviews if x.rating <= rating]
-        if rating_option == "rating_ge":
-            return [x for x in reviews if x.rating >= rating]
-        if rating_option == "rating_eq":
-            return [x for x in reviews if x.rating == rating]
-        else:
-            return reviews
