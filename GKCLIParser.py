@@ -2,6 +2,7 @@ import argparse
 
 
 class GKCLIParser:
+
     def __init__(self):
         self.DEFAULT_NB_PAGE = 10
 
@@ -58,9 +59,10 @@ class GKCLIParser:
                                   help="Translate reviews")
         '''
         # Analyse parser
+        analyse_parent_parser = argparse.ArgumentParser(add_help=False)
         parser_analyse = subparsers.add_parser('analyse', help='Analyse data see help for more information',
-                                               parents=[parent_parser])
-        parser_analyse.add_argument('-N', '--nb_words', metavar="nb_words", type=int,
+                                               parents=[parent_parser, analyse_parent_parser])
+        analyse_parent_parser.add_argument('-N', '--nb_words', metavar="nb_words", type=int,
                                     help="Number of best ranked words to select (Default: 100)",
                                     default=100, nargs='?')
         sub_parser_analyse = parser_analyse.add_subparsers(help='Available analyse commands', dest='analyse_commands')
@@ -68,7 +70,7 @@ class GKCLIParser:
         ## Word cloud command
         parser_word_cloud = sub_parser_analyse.add_parser('words', help='See words help for more information',
                                                           formatter_class=argparse.RawTextHelpFormatter,
-                                                          parents=[parent_parser])
+                                                          parents=[parent_parser, analyse_parent_parser])
         parser_word_cloud.add_argument('--word-cloud-bg', metavar='color', default='white',
                                        help='Background color for the word cloud Example: black')
         parser_word_cloud.add_argument('--word-cloud-color-scheme', metavar='color_scheme',
@@ -80,7 +82,7 @@ class GKCLIParser:
         ## Review command
         parser_review = sub_parser_analyse.add_parser('review', help='See review help for more information',
                                                       formatter_class=argparse.RawTextHelpFormatter,
-                                                      parents=[parent_parser])
+                                                      parents=[parent_parser, analyse_parent_parser])
         parser_review.add_argument('review_path', metavar='filepath',
                                    help="Path to the review to analyse")
         '''

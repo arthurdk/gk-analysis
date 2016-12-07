@@ -13,8 +13,8 @@ class VisualizationStrategy:
 '''
 import random
 
-class GKVisualizer:
 
+class GKVisualizer:
     def __init__(self, reviewers_filtering, group_by_option='nothing',
                  rating_filters=[],
                  word_cloud_background="white",
@@ -27,26 +27,36 @@ class GKVisualizer:
 
     @staticmethod
     def _grey_color_func(word, font_size, position, orientation, random_state=None, **kwargs):
+        """
+        Credit to word_cloud project on github
+        :param word:
+        :param font_size:
+        :param position:
+        :param orientation:
+        :param random_state:
+        :param kwargs:
+        :return:
+        """
         return "hsl(0, 0%%, %d%%)" % random.randint(60, 100)
 
     def word_cloud(self, frequencies, mask=None):
 
         if mask is not None:
-            wordcloud = WordCloud(background_color=self.word_cloud_background,
-                                  width=1200,
-                                  height=1000,
-                                  mask=mask
-                                  ).generate_from_frequencies(frequencies)
+            word_cloud = WordCloud(background_color=self.word_cloud_background,
+                                   width=1200,
+                                   height=1000,
+                                   mask=mask
+                                   ).generate_from_frequencies(frequencies)
         else:
-            wordcloud = WordCloud(background_color=self.word_cloud_background,
-                                  width=1200,
-                                  height=1000
-                                  ).generate_from_frequencies(frequencies)
+            word_cloud = WordCloud(background_color=self.word_cloud_background,
+                                   width=1200,
+                                   height=1000
+                                   ).generate_from_frequencies(frequencies)
 
         if self.word_cloud_color_scheme is not None:
-            plt.imshow(wordcloud.recolor(color_func=GKVisualizer._grey_color_func, random_state=3))
+            plt.imshow(word_cloud.recolor(color_func=GKVisualizer._grey_color_func, random_state=3))
         else:
-            plt.imshow(wordcloud)
+            plt.imshow(word_cloud)
         plt.axis('off')
         plt.show()
 
@@ -117,4 +127,3 @@ class GKVisualizer:
         }
 
         plotly.offline.plot(figure)
-

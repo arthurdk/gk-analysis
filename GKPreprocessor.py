@@ -19,6 +19,7 @@ class GKPreprocessor:
         """
         Credits: https://www.dataquest.io/blog/natural-language-processing-with-python/
         :param reviews:
+        :param class_attr:
         :return:
         """
         vectorizer = CountVectorizer(lowercase=True, stop_words=get_stop_words('french'))

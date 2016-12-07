@@ -12,13 +12,13 @@ class GKDispatcher:
         self.visualizer = visualizer
 
     def dispatch(self, reviews, labels):
-        getattr(self, "dispatch_"+self.args.command)(reviews, labels)
+        getattr(self, "dispatch_" + self.args.command)(reviews, labels)
 
     def dispatch_analyse(self, reviews, labels):
         if "words" in self.args.analyse_commands:
             bag_of_words, classes, vocab = self.pre_processor.construct_bag_of_words(reviews, "rating")
             mask_array, scores = self.feat_selector.perform_feature_selection(bag_of_words, classes,
-                                                                         nb_words=self.args.nb_words)
+                                                                              nb_words=self.args.nb_words)
             print("Most representative words for GK ", self.filterer.reviewers_filtering)
             mask = None
             top_words = vocab[mask_array]
@@ -48,7 +48,7 @@ class GKDispatcher:
             processed_classes = [hash(label) for label in classes]
             # toDO the review to predict SHOULD NOT be in the feature selection process !!!!
             mask_array, scores = self.feat_selector.perform_feature_selection(bag_of_words, processed_classes,
-                                                                         nb_words=self.args.nb_words)
+                                                                              nb_words=self.args.nb_words)
             # Keep best ranked features
             processed_bag_of_words = bag_of_words[:, mask_array]
             # Predict the newly added feature
@@ -70,11 +70,11 @@ class GKDispatcher:
                 data, anno_labels = getattr(self.pre_processor,
                                             "grouped_" + method)(reviews, labels)
                 title = self.visualizer.get_named_title(method + " " + self.args.metric + " given by GK reviewers",
-                                                  self.filterer.reviewers_filtering)
+                                                        self.filterer.reviewers_filtering)
                 title = self.visualizer.get_dated_title(title, reviews)
                 title = self.visualizer.get_rating_filtered_title(title)
                 ylabel = method + " " + self.args.metric
                 self.visualizer.group_plot(data=data,
-                                      labels=anno_labels,
-                                      ylabel=ylabel,
-                                      title=title)
+                                           labels=anno_labels,
+                                           ylabel=ylabel,
+                                           title=title)

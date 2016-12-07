@@ -13,7 +13,8 @@ class GKAnalysis:
     def __init__(self):
         pass
 
-    def start(self):
+    @staticmethod
+    def start():
         cli_parser = GKCLIParser()
         args = cli_parser.do_parse_args()
         pre_processor = GKPreprocessor(group_by_option=args.group_by)

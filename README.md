@@ -26,11 +26,13 @@ gk-analysis is able to fetch data from the Gamekult website and then process eve
 ### Output examples
 
 
-You can display the most meaningful words for a list of reviewers given that the rating is less or equals to 5.
+Thanks to machine learning, you can display the most meaningful words for a list of reviewers given that the rating is less or equals to 3.
 ```sh
-$ python  GKAnalysis.py  analyse --rating-le 5 words --reviewers "Stoon"
+$ python  GKAnalysis.py  analyse  words  --rating-le 3 -R "Stoon"
 ```
-[![N|Solid](http://reho.st/preview/self/0daea958e847382e80ff4a7b469aac6f92072536.png)](http://reho.st/view/self/0daea958e847382e80ff4a7b469aac6f92072536.png)
+
+[![N|Solid](http://reho.st/medium/self/a2717ca486d8f6fb9a85221770278131edebd2d2.png)](http://reho.st/view/self/a2717ca486d8f6fb9a85221770278131edebd2d2.png)
+
 
 You can also display the variance of ratings by reviewer
 ```sh
