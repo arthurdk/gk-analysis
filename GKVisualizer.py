@@ -2,6 +2,7 @@ import plotly
 from plotly.graph_objs import Scatter, Layout, Bar, Figure
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+import plotly.graph_objs as go
 
 '''
 class VisualizationStrategy:
@@ -139,7 +140,6 @@ class GKVisualizer:
                "layout": layout}
         plotly.offline.plot(fig)
 
-
     @staticmethod
     def _determine_min_max(reviews, min_date, max_date):
         for review in reviews:
@@ -207,3 +207,24 @@ class GKVisualizer:
         }
 
         plotly.offline.plot(figure)
+
+    def scatter(self, x, y, title):
+
+        layout = dict(title=title,
+                      yaxis=dict(
+                          title="Rating")
+                      ,
+                      xaxis=dict(
+                          title="Date")
+                      )
+
+        # Create a trace
+        trace = go.Scatter(
+            x=x,
+            y=y,
+            mode='markers'
+        )
+
+        data = [trace]
+        fig = dict(data=data, layout=layout)
+        plotly.offline.plot(fig)

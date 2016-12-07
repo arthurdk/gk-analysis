@@ -47,12 +47,10 @@ class GKAnalysis:
 
         visualizer = GKVisualizer(reviewers_filtering=filterer.reviewers_filtering, group_by_option=args.group_by,
                                   rating_filters=filterer.rating_filters)
-        # Perform Group By
-        reviews, labels = pre_processor.perform_group_by(reviews)
 
         dispatcher = GKDispatcher(pre_processor=pre_processor, filterer=filterer, feat_selector=feat_selector,
                                   visualizer=visualizer, args=args)
-        dispatcher.dispatch(reviews, labels)
+        dispatcher.dispatch(reviews)
 
 
 def main():

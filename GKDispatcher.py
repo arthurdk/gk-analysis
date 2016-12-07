@@ -12,10 +12,10 @@ class GKDispatcher:
         self.visualizer = visualizer
         self.classifier = GKClassifier()
 
-    def dispatch(self, reviews, labels):
-        getattr(self, "dispatch_" + self.args.command)(reviews, labels)
+    def dispatch(self, reviews):
+        getattr(self, "dispatch_" + self.args.command)(reviews)
 
-    def dispatch_analyse(self, reviews, labels):
+    def dispatch_analyse(self, reviews):
         if "words" in self.args.analyse_commands:
             bag_of_words, classes, vocab = self.pre_processor.construct_bag_of_words(reviews, "rating")
             mask_array, scores = self.feat_selector.perform_feature_selection(bag_of_words, classes,
@@ -65,21 +65,34 @@ class GKDispatcher:
             classes = list(set(classes))
             self.visualizer.display_gauge(classes, prediction)
 
-    def dispatch_visualize(self, reviews, labels):
+    def dispatch_visualize(self, reviews):
         self.pre_processor.metric = self.args.metric
         # Visualize all methods
         for method in self.args.visualize_command:
             if self.visualizer.group_by == 'nothing':
                 getattr(self.visualizer, "plot_" + method)(reviews)
             else:
-                data, anno_labels = getattr(self.pre_processor,
-                                            "grouped_" + method)(reviews, labels)
-                title = self.visualizer.get_named_title(method + " " + self.args.metric + " given by GK reviewers",
-                                                        self.filterer.reviewers_filtering)
-                title = self.visualizer.get_dated_title(title, reviews)
-                title = self.visualizer.get_rating_filtered_title(title)
-                ylabel = method + " " + self.args.metric
-                self.visualizer.group_plot(data=data,
-                                           labels=anno_labels,
-                                           ylabel=ylabel,
-                                           title=title)
+                if "scatter" in self.args.visualize_command:
+                    print("Group by ignored for now ")  # TODO fix this non generic code :(
+
+                    dates = [review.date for review in reviews]
+                    labels = [review.rating for review in reviews]
+                    title = self.visualizer.get_named_title("Scatter plot of review according to rating and date given by GK reviewers",
+                                                            self.filterer.reviewers_filtering)
+                    title = self.visualizer.get_rating_filtered_title(title)
+                    self.visualizer.scatter(x=dates, y=labels, title=title)
+
+                else:
+                    # Perform Group By
+                    reviews, labels = self.pre_processor.perform_group_by(reviews)
+                    data, anno_labels = getattr(self.pre_processor,
+                                                "grouped_" + method)(reviews, labels)
+                    title = self.visualizer.get_named_title(method + " " + self.args.metric + " given by GK reviewers",
+                                                            self.filterer.reviewers_filtering)
+                    title = self.visualizer.get_dated_title(title, reviews)
+                    title = self.visualizer.get_rating_filtered_title(title)
+                    ylabel = method + " " + self.args.metric
+                    self.visualizer.group_plot(data=data,
+                                               labels=anno_labels,
+                                               ylabel=ylabel,
+                                               title=title)

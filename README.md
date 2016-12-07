@@ -105,6 +105,29 @@ $ python GKAnalysis.py analyse review rating ./path-to-file -N 1000
 
 7 wow. But rest assured it's probably because it's an extract of a Deus Ex MD review which was well rated on GK.
 
+----
+
+It's also possible to display a scatter plot of reviews
+
+
+```sh
+$ python GKAnalysis.py analyse visualize scatter
+```
+
+
+[![N|Solid](http://reho.st/medium/self/bf74b50e74493ed2dfa3d68527dd86e6f62b66ac.png)](http://reho.st/view/self/bf74b50e74493ed2dfa3d68527dd86e6f62b66ac.png)
+
+
+And it is still possible to use filter !
+
+
+```sh
+$ python GKAnalysis.py analyse visualize scatter -R "Stoon"
+```
+
+
+[![N|Solid](http://reho.st/medium/self/36a95b10ec73481a7ae61f982fb867296c13ea40.png)](http://reho.st/view/self/36a95b10ec73481a7ae61f982fb867296c13ea40.png)
+
 
 ### Online Demo
 
@@ -186,13 +209,14 @@ $ python GKAnalysis.py visualize --help
 ```
 usage: GKAnalysis.py visualize [-h] [-R [reviewers]] [-Y year]
                                [--rating-le rating] [--rating-ge rating]
-                               [--rating-eq rating] [-G by] [-M metric]
+                               [--rating-eq rating] [-G [by]] [-M metric]
                                command [command ...]
 
 positional arguments:
   command               List of available visualization commands:
                         - variance
                         - mean
+                        - scatter
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -204,7 +228,8 @@ optional arguments:
   --rating-le rating    Filter review having ratings less or equals than the given one
   --rating-ge rating    Filter review having ratings greater or equals than the given one
   --rating-eq rating    Filter review having a rating equals to the given one
-  -G by, --group-by by  Determine how to group by data (Default: data grouped by reviewer)
+  -G [by], --group-by [by]
+                        Determine how to group by data (Default: data grouped by reviewer)
                         List of options:
                         - reviewer
                         - year

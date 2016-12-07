@@ -131,6 +131,7 @@ def image_url_fetcher(url):
 def image_fetcher(filepath):
     return np.array(Image.open(filepath))
 
+
 def fetch_parse_full_tests(force_download, cache, nb_page):
     """
     Fetch & Parse both lists and content
