@@ -248,6 +248,7 @@ Want to contribute or fork? That's great, go ahead but be remember this is some 
  - Group by reviewer AND year at the same time
  - Group by ratings and display who given the most of each one (or at least display the propotion)
  - Sentiment analysis by reviewer (need translation for optimality :/)
+ - Make the code more generic (as of now it more a script than a program)
 
 This project could also support other websites but that's not really what I am personally interested in (I will still welcome PR though).
 
