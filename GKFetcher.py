@@ -35,7 +35,7 @@ def fetch_parse_test_content(url):
         content = soup.find("div", {"id": "articleId"}).getText()
         # conclusion = soup.find("div", {"id": "story-conclusion"}).getText()
         # summary = soup.find("div", {"class": "summary"}).getText() # Pro and Cons
-    except AttributeError:
+    except AttributeError, urllib2.HTTPError:
         print("An error happened, review (content) skipped.")
         pass
     return content.encode('utf-8')
@@ -63,7 +63,7 @@ def fetch_parse_page(url):
                         review_link = "http://www.gamekult.com" + info_div.findAll("a")[0].get('href')
                         title = info_div.getText()
 
-                        # Shitty regex hack
+                        # Shitty regex hackline
                         raw_reviewer = review_soup.findAll("p", {"class": "byline"})[0].getText()
                         raw_reviewer = raw_reviewer.split("Par ")[1].split(", le")
                         reviewer = raw_reviewer[0]

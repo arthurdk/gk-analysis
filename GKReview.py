@@ -14,6 +14,12 @@ class GKReview:
     def print_review(self):
         print(self.title, " ", self.rating, " by ", self.reviewer)
 
+    def get_year(self):
+        return self.date.year
+
+    def get_reviewer(self):
+        return self.reviewer
+
     def get_metric(self, metric):
         if metric == 'rating':
             return self.rating

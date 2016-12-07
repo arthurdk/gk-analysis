@@ -17,7 +17,6 @@ class GKAnalysis:
     def start():
         cli_parser = GKCLIParser()
         args = cli_parser.do_parse_args()
-        pre_processor = GKPreprocessor(group_by_option=args.group_by)
         filterer = GKFilterer()
         feat_selector = GKFeatureSelector()
         # print(args)
@@ -37,20 +36,21 @@ class GKAnalysis:
                 reviews = GKFetcher.fetch_translation(reviews)
             '''
 
-        ''' TODO implement in the right place!!!
-        if args.command == "analyse":
-            if "sentiment" in args.analyse_command:
-                reviews = GKSentiment.perform_analysis(reviews, "content")
-        '''
+            ''' TODO implement in the right place!!!
+            if args.command == "analyse":
+                if "sentiment" in args.analyse_command:
+                    reviews = GKSentiment.perform_analysis(reviews, "content")
+            '''
 
-        reviews = filterer.do_filter(reviews=reviews, args=args)
+        if args.command != "fetch":
+            reviews = filterer.do_filter(reviews=reviews, args=args)
 
-        visualizer = GKVisualizer(reviewers_filtering=filterer.reviewers_filtering, group_by_option=args.group_by,
-                                  rating_filters=filterer.rating_filters)
-
-        dispatcher = GKDispatcher(pre_processor=pre_processor, filterer=filterer, feat_selector=feat_selector,
-                                  visualizer=visualizer, args=args)
-        dispatcher.dispatch(reviews)
+            visualizer = GKVisualizer(reviewers_filtering=filterer.reviewers_filtering, group_by_option=args.group_by,
+                                      rating_filters=filterer.rating_filters)
+            pre_processor = GKPreprocessor(group_by_option=args.group_by)
+            dispatcher = GKDispatcher(pre_processor=pre_processor, filterer=filterer, feat_selector=feat_selector,
+                                      visualizer=visualizer, args=args)
+            dispatcher.dispatch(reviews)
 
 
 def main():

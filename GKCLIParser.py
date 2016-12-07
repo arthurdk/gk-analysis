@@ -28,7 +28,7 @@ class GKCLIParser:
                                    help='Filter review having ratings greater or equals than the given one')
         parent_parser.add_argument('--rating-eq', metavar='rating', type=int,
                                    help='Filter review having a rating equals to the given one')
-        group_by_choices = ["reviewer", "year"]
+        group_by_choices = ["reviewer", "year", "reviewer_year", "year_reviewer"]
         parent_parser.add_argument('-G', '--group-by', metavar='by', nargs='?',
                                    help='Determine how to group by data (Default: data grouped by reviewer) '
                                         "\nList of options:\n- " + "\n- ".join(group_by_choices),

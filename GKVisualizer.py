@@ -191,7 +191,6 @@ class GKVisualizer:
         return title
 
     def group_plot(self, data, labels, title, ylabel):
-
         figure = {
             "data": [
                 Bar(x=labels, y=data)
@@ -208,6 +207,30 @@ class GKVisualizer:
         }
 
         plotly.offline.plot(figure)
+
+    def double_group_plot(self, gk_grouped_reviews, y, ylabel, labels, title):
+
+        traces = []
+        for idx in range(len(labels)):
+            traces.append(go.Bar(
+                x=gk_grouped_reviews.labels,
+                y=y[:, idx],  # value for the second level label
+                name=labels[idx]  # second level label
+            ))
+
+        layout = go.Layout(
+            title=title,
+            barmode='group',
+            xaxis=dict(
+                title=self.group_by
+            ),
+            yaxis=dict(
+                title=ylabel
+            ),
+        )
+
+        fig = go.Figure(data=traces, layout=layout)
+        plotly.offline.plot(fig)
 
     @staticmethod
     def scatter(x, y, title):

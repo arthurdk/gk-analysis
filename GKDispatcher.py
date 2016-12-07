@@ -1,9 +1,11 @@
 import GKFetcher as GKFetcher
 from GKReview import *
+from GKGroupedReviews import *
 from GKClassifier import *
 
 
 class GKDispatcher:
+    # TODO DO not pass args but true value ;)
     def __init__(self, pre_processor, filterer, feat_selector, visualizer, args):
         self.pre_processor = pre_processor
         self.filterer = filterer
@@ -16,9 +18,13 @@ class GKDispatcher:
         getattr(self, "dispatch_" + self.args.command)(reviews)
 
     def dispatch_analyse(self, reviews):
+
+        gk_grouped_reviews = GKGroupedReviews(reviews=reviews, group_by_option=self.pre_processor.group_by)
+        gk_grouped_reviews.perform_group_by()
+
         # TODO MAKE THIS CLASS GREAT AGAIN !
         if "words" in self.args.analyse_commands:
-            bag_of_words, classes, vocab = self.pre_processor.construct_bag_of_words(reviews, "rating")
+            bag_of_words, classes, vocab = self.pre_processor.construct_bag_of_words(gk_grouped_reviews, "rating")
             mask_array, scores = self.feat_selector.perform_feature_selection(bag_of_words, classes,
                                                                               nb_words=self.args.nb_words)
             print("Most representative words for GK ", self.filterer.reviewers_filtering)
@@ -34,20 +40,20 @@ class GKDispatcher:
             self.visualizer.word_cloud_color_scheme = self.args.word_cloud_color_scheme
             self.visualizer.word_cloud(zip(top_words, scores), mask=mask)
 
-        if "prediction" in self.args.analyse_commands:
-            # Perform Group By
-            reviews, labels = self.pre_processor.perform_group_by(reviews)
-            # TODO ditch this mess
+        elif "prediction" in self.args.analyse_commands:
+
             # Insert a new group with the review to predict
             review = GKReview(reviewer='Unknown')
             to_predict = [review]
             review_path = self.args.review_path
             content = ""
+            # Fetch content of review file # TODO nothing to do here BTW
             with open(review_path, 'r') as review_file:
                 content = review_file.read()
             to_predict[0].content = content
-            reviews.append(to_predict)  # inject the fake new group
-            bag_of_words, classes, vocab = self.pre_processor.construct_bag_of_words(reviews, self.args.predict_target)
+            gk_grouped_reviews.grouped_reviews.append(to_predict)  # inject the fake new group
+            bag_of_words, classes, vocab = self.pre_processor.construct_bag_of_words(gk_grouped_reviews,
+                                                                                     self.args.predict_target)
             # Create hash of class label as it's not working with string
             processed_classes = [hash(label) for label in classes]
             # TODO the review to predict SHOULD NOT be in the feature selection process !!!!
@@ -92,15 +98,27 @@ class GKDispatcher:
 
                 else:
                     # Perform Group By
-                    reviews, labels = self.pre_processor.perform_group_by(reviews)
-                    data, anno_labels = getattr(self.pre_processor,
-                                                "grouped_" + method)(reviews, labels)
-                    title = self.visualizer.get_named_title(method + " " + self.args.metric + " given by GK reviewers",
-                                                            self.filterer.reviewers_filtering)
-                    title = self.visualizer.get_dated_title(title, reviews)
-                    title = self.visualizer.get_rating_filtered_title(title)
-                    ylabel = method + " " + self.args.metric
-                    self.visualizer.group_plot(data=data,
-                                               labels=anno_labels,
-                                               ylabel=ylabel,
-                                               title=title)
+                    gk_grouped_reviews = GKGroupedReviews(reviews=reviews, group_by_option=self.pre_processor.group_by)
+                    gk_grouped_reviews.perform_group_by()
+
+                    data, annotated_labels = self.pre_processor.grouped_stats(gk_grouped_reviews, method)
+
+                    if gk_grouped_reviews.get_depth() == 1:
+                        print("test")
+                        title = self.visualizer.get_named_title(method + " " + self.args.metric + " given by GK reviewers",
+                                                                self.filterer.reviewers_filtering)
+                        title = self.visualizer.get_dated_title(title, gk_grouped_reviews.grouped_reviews)
+                        title = self.visualizer.get_rating_filtered_title(title)
+                        ylabel = method + " " + self.args.metric
+                        self.visualizer.group_plot(data=data,
+                                                   labels=annotated_labels,
+                                                   ylabel=ylabel,
+                                                   title=title)
+                    elif gk_grouped_reviews.get_depth() == 2:
+                        title = self.visualizer.get_named_title(method + " " + self.args.metric + " given by GK reviewers",
+                                                                self.filterer.reviewers_filtering)
+                        title = self.visualizer.get_rating_filtered_title(title)
+                        ylabel = method + " " + self.args.metric
+                        self.visualizer.double_group_plot(gk_grouped_reviews=gk_grouped_reviews, y=data,
+                                                          labels=annotated_labels, ylabel=ylabel, title=title)
+
