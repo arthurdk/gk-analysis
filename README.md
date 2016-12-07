@@ -140,7 +140,7 @@ $ python GKAnalysis.py visualize variance -G "reviewer_year" --metric rating
 
 [![N|Solid](http://reho.st/medium/self/51f2e4ab13a5c8e3b68c4885026d98c0b1607de5.png)](http://reho.st/view/self/51f2e4ab13a5c8e3b68c4885026d98c0b1607de5.png)
 
-Interactive version: [https://github.com/arthurdk/gk-analysis/blob/master/examples/double_group_by.html](https://github.com/arthurdk/gk-analysis/blob/master/examples/double_group_by.html)
+Interactive version: [https://cdn.rawgit.com/arthurdk/gk-analysis/master/examples/double_group_by.html](https://cdn.rawgit.com/arthurdk/gk-analysis/master/examples/double_group_by.html)
 
 ### Online Demo
 
