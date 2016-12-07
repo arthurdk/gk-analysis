@@ -62,7 +62,7 @@ class GKVisualizer:
         plt.show()
 
     @staticmethod
-    def display_gauge(labels, target):
+    def display_gauge(labels, target, title):
 
         value = 100.0 / len(labels)
         values = [value] * len(labels)
@@ -105,6 +105,7 @@ class GKVisualizer:
         }
 
         layout = {
+            'title': title,
             'xaxis': {
                 'showticklabels': False,
                 'autotick': False,
@@ -208,7 +209,8 @@ class GKVisualizer:
 
         plotly.offline.plot(figure)
 
-    def scatter(self, x, y, title):
+    @staticmethod
+    def scatter(x, y, title):
 
         layout = dict(title=title,
                       yaxis=dict(

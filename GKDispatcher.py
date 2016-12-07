@@ -16,6 +16,7 @@ class GKDispatcher:
         getattr(self, "dispatch_" + self.args.command)(reviews)
 
     def dispatch_analyse(self, reviews):
+        # TODO MAKE THIS CLASS GREAT AGAIN !
         if "words" in self.args.analyse_commands:
             bag_of_words, classes, vocab = self.pre_processor.construct_bag_of_words(reviews, "rating")
             mask_array, scores = self.feat_selector.perform_feature_selection(bag_of_words, classes,
@@ -33,8 +34,10 @@ class GKDispatcher:
             self.visualizer.word_cloud_color_scheme = self.args.word_cloud_color_scheme
             self.visualizer.word_cloud(zip(top_words, scores), mask=mask)
 
-        if "review" in self.args.analyse_commands:
-            # TODO ditch this mess - don't forget the parse argument mess too !!!
+        if "prediction" in self.args.analyse_commands:
+            # Perform Group By
+            reviews, labels = self.pre_processor.perform_group_by(reviews)
+            # TODO ditch this mess
             # Insert a new group with the review to predict
             review = GKReview(reviewer='Unknown')
             to_predict = [review]
@@ -47,7 +50,7 @@ class GKDispatcher:
             bag_of_words, classes, vocab = self.pre_processor.construct_bag_of_words(reviews, self.args.predict_target)
             # Create hash of class label as it's not working with string
             processed_classes = [hash(label) for label in classes]
-            # toDO the review to predict SHOULD NOT be in the feature selection process !!!!
+            # TODO the review to predict SHOULD NOT be in the feature selection process !!!!
             mask_array, scores = self.feat_selector.perform_feature_selection(bag_of_words, processed_classes,
                                                                               nb_words=self.args.nb_words)
             # Keep best ranked features
@@ -63,7 +66,11 @@ class GKDispatcher:
 
             classes.remove(getattr(review, self.args.predict_target))
             classes = list(set(classes))
-            self.visualizer.display_gauge(classes, prediction)
+            title = self.visualizer.get_named_title(
+                "Prediction of %s on given review" % self.args.predict_target,
+                self.filterer.reviewers_filtering)
+            title = self.visualizer.get_rating_filtered_title(title)
+            self.visualizer.display_gauge(classes, prediction, title)
 
     def dispatch_visualize(self, reviews):
         self.pre_processor.metric = self.args.metric
@@ -77,7 +84,8 @@ class GKDispatcher:
 
                     dates = [review.date for review in reviews]
                     labels = [review.rating for review in reviews]
-                    title = self.visualizer.get_named_title("Scatter plot of review according to rating and date given by GK reviewers",
+                    title = self.visualizer.get_named_title("Scatter plot of review according to rating "
+                                                            "and date given by GK reviewers",
                                                             self.filterer.reviewers_filtering)
                     title = self.visualizer.get_rating_filtered_title(title)
                     self.visualizer.scatter(x=dates, y=labels, title=title)

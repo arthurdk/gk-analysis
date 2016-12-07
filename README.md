@@ -86,22 +86,22 @@ $ python GKAnalysis.py analyse words --mask-url \
 You can also write a review (or just some text) and it will tell you the most probable GK reviewer that could have written this review
 
 ```sh
-$ python GKAnalysis.py analyse review reviewer ./path-to-file -N 1000
+$ python GKAnalysis.py analyse prediction reviewer ./path-to-file -N 1000
 ```
 
 In this example the file contained a review from Gameblog, sorry Gautoz :/
 
-[![N|Solid](http://reho.st/medium/self/b8c83453c9c9097fbf81fb58d7cc49080aa6fe6c.png)](http://reho.st/view/self/b8c83453c9c9097fbf81fb58d7cc49080aa6fe6c.png)
+[![N|Solid](http://reho.st/medium/self/78c18f7dbe7bb51d3883cdaeb83cbddc6a0d48ba.png)](http://reho.st/view/self/78c18f7dbe7bb51d3883cdaeb83cbddc6a0d48ba.png)
+
 
 Let's see how this review would have been rated on Gamekult.
 
 ```sh
-$ python GKAnalysis.py analyse review rating ./path-to-file -N 1000
+$ python GKAnalysis.py analyse prediction rating ./path-to-file -N 1000
 ```
 
 
-
-[![N|Solid](http://reho.st/medium/self/33ce4ccd504993ff1617eb54eb471adea565ba1e.png)](http://reho.st/view/self/33ce4ccd504993ff1617eb54eb471adea565ba1e.png)
+[![N|Solid](http://reho.st/medium/self/463ef20dff80b968229d1f7b7d14f48f328ec9e5.png)](http://reho.st/view/self/463ef20dff80b968229d1f7b7d14f48f328ec9e5.png)
 
 7 wow. But rest assured it's probably because it's an extract of a Deus Ex MD review which was well rated on GK.
 
@@ -253,12 +253,12 @@ $ python GKAnalysis.py analyse --help
 usage: GKAnalysis.py analyse [-h] [-R [reviewers]] [-Y year]
                              [--rating-le rating] [--rating-ge rating]
                              [--rating-eq rating] [-G by]
-                             {words,review} ...
+                             {words,prediction} ...
 
 positional arguments:
-  {words,review}        Available analyse commands
+  {words,prediction}        Available analyse commands
     words               See words help for more information
-    review              See review help for more information
+    prediction          See prediction help for more information
 
 optional arguments:
   -h, --help            show this help message and exit

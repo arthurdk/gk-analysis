@@ -79,15 +79,15 @@ class GKCLIParser:
         group.add_argument('--mask-path', metavar='path-to-file', help='Path to a mask for the wordcloud')
 
         ## Review command
-        parser_review = sub_parser_analyse.add_parser('review', help='See review help for more information',
+        parser_prediction = sub_parser_analyse.add_parser('prediction', help='See prediction help for more information',
                                                       formatter_class=argparse.RawTextHelpFormatter,
                                                       parents=[parent_parser, analyse_parent_parser])
         prediction_choices = ["reviewer", "rating"]
-        parser_review.add_argument('predict_target', metavar='prediction',
-                                   help="Choose which elment do you want to make prediction on "
+        parser_prediction.add_argument('predict_target', metavar='prediction',
+                                   help="Choose which element do you want to make prediction on "
                                         "\nList of options:\n- " + "\n- ".join(prediction_choices),
                                    choices=prediction_choices)
-        parser_review.add_argument('review_path', metavar='filepath',
+        parser_prediction.add_argument('review_path', metavar='filepath',
                                    help="Path to the review to analyse")
 
         # Actual parsing
