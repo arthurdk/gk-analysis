@@ -29,19 +29,19 @@ class GKVisualizer:
     def _grey_color_func(word, font_size, position, orientation, random_state=None, **kwargs):
         return "hsl(0, 0%%, %d%%)" % random.randint(60, 100)
 
-    def word_cloud(self, words, mask=None):
+    def word_cloud(self, frequencies, mask=None):
 
         if mask is not None:
             wordcloud = WordCloud(background_color=self.word_cloud_background,
                                   width=1200,
                                   height=1000,
                                   mask=mask
-                                  ).generate(words)
+                                  ).generate_from_frequencies(frequencies)
         else:
             wordcloud = WordCloud(background_color=self.word_cloud_background,
                                   width=1200,
                                   height=1000
-                                  ).generate(words)
+                                  ).generate_from_frequencies(frequencies)
 
         if self.word_cloud_color_scheme is not None:
             plt.imshow(wordcloud.recolor(color_func=GKVisualizer._grey_color_func, random_state=3))

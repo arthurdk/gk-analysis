@@ -3,7 +3,7 @@ from datetime import datetime
 
 class GKReview:
     # TODO add platform(s)
-    def __init__(self, reviewer, title, review_link, rating, date):
+    def __init__(self, reviewer="default", title="default", review_link="default", rating=-1, date="17/07/1994"):
         self.reviewer = reviewer
         self.title = title
         self.link = review_link

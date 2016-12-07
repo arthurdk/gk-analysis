@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
 import GKFetcher as GKFetcher
+import GKReview
 from GKPreprocessor import *
 from GKVisualizer import *
 from GKFilterer import *
+from GKClassifier import *
+from GKReview import *
 import GKSentiment as GKSentiment
 import argparse
 
@@ -62,7 +66,7 @@ def _argument_parsing():
     # Analyse parser
     parser_analyse = subparsers.add_parser('analyse', help='Analyse data (sentiment analysis)',
                                            parents=[parent_parser])
-    analyse_command = ["words", "sentiment"]
+    analyse_command = ["words", "sentiment", "review"]
     parser_analyse.add_argument('analyse_command', metavar='command', nargs="+",
                                 help="List of available analysing commands: \n"
                                      "- " + "\n- ".join(analyse_command),
@@ -118,20 +122,43 @@ def main():
                               rating_filters=filterer.rating_filters)
     if args.command == 'analyse':
         if "words" in args.analyse_command:
-            bag_of_words, classes, vocab = pre_processor.construct_bag_of_words(reviews)
-            top_words_indexes = pre_processor.perform_feature_selection(bag_of_words, classes, nb_words=args.nb_words)
-            # processed_bag_of_words = bag_of_words[:, top_words_indexes[0]]
+            bag_of_words, classes, vocab = pre_processor.construct_bag_of_words(reviews, "rating")
+            mask_array, scores = pre_processor.perform_feature_selection(bag_of_words, classes, nb_words=args.nb_words)
             print("Most representative words for GK ", filterer.reviewers_filtering)
             mask = None
-            top_words = [vocab[i] for i in top_words_indexes]
+            top_words = vocab[mask_array]
 
             if args.mask_url is not None:
                 mask = GKFetcher.image_url_fetcher(args.mask_url)
             elif args.mask_path is not None:
                 mask = GKFetcher.image_fetcher(args.mask_path)
+            # TODO subparser pour le word cloud !!
             visualizer.word_cloud_background = args.word_cloud_bg
             visualizer.word_cloud_color_scheme = args.word_cloud_color_scheme
-            visualizer.word_cloud(" ".join(top_words), mask=mask)
+            visualizer.word_cloud(zip(top_words, scores), mask=mask)
+
+        if "review" in args.analyse_command:
+            # TODO ditch this mess - don't forget the parse arguement mess too !!!
+            # Insert a new group with the review to predict
+            review = GKReview(reviewer='Unknown')
+            to_predict = [review]
+            to_predict[0].content = "Et c’est là qu’on remarque un premier problème de taille : la carte accessible à tout moment n’est absolument pas pratique, la faute à l’absence de filtres"
+            reviews.append(to_predict)
+            bag_of_words, classes, vocab = pre_processor.construct_bag_of_words(reviews, "reviewer")
+            # Create hash of class label as it's not working with string
+            processed_classes = [hash(label) for label in classes]
+            # toDO the review to predict SHOULD NOT be in the feature selection process !!!!
+            mask_array, scores = pre_processor.perform_feature_selection(bag_of_words, processed_classes, nb_words=args.nb_words)
+            # Keep best ranked features
+            processed_bag_of_words = bag_of_words[:, mask_array]
+            result = GKClassifier.predict_reviewer(features=processed_bag_of_words, classes=processed_classes)
+            prediction = []
+            for idx, label in enumerate(processed_classes):
+                # print(label)
+                if label == result:
+                    prediction = classes[idx]
+            print("You are like ", prediction)
+
         else:
             print("Not implemented yet!")
 

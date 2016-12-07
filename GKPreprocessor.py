@@ -4,6 +4,9 @@ from sklearn.feature_extraction.text import CountVectorizer
 from stop_words import get_stop_words
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import chi2
+from sklearn.feature_selection import RFE
+from sklearn.svm import SVR
+from sklearn.linear_model import LogisticRegression
 
 
 class GKPreprocessor:
@@ -12,7 +15,7 @@ class GKPreprocessor:
         self.metric = metric
 
     @staticmethod
-    def construct_bag_of_words(reviews):
+    def construct_bag_of_words(reviews, class_attr):
         """
         Credits: https://www.dataquest.io/blog/natural-language-processing-with-python/
         :param reviews:
@@ -24,25 +27,21 @@ class GKPreprocessor:
         for group in reviews:
             for review in group:
                 contents.append(review.content)
-                classes.append(review.rating)
+                classes.append(getattr(review, class_attr))
         matrix = vectorizer.fit_transform(contents)
-        vocab = [word for word in vectorizer.vocabulary_]
-        return matrix, classes, vocab
+        vocab = np.array([word for word in vectorizer.vocabulary_])
+        return matrix.todense(), classes, vocab
 
     @staticmethod
     def perform_feature_selection(bag_of_words, classes, nb_words):
         # TODO Cross validation ;)
-        # feature extraction
-        kbest = SelectKBest(score_func=chi2, k=nb_words)
-        fit = kbest.fit(bag_of_words, classes)
-        top_words = kbest.get_support().nonzero()
-
-        # Pick only the most informative columns in the data.
-
-        # summarize scores
-        # features_train = fit.transform(X_train)
-        # features_val = fit.transform(X_val)
-        return top_words[0].tolist()
+        # feature selection
+        print("Performing feature selection on ", bag_of_words.shape[0], " reviews")
+        selector = SelectKBest(chi2, k=nb_words)
+        selector.fit(bag_of_words, classes)
+        scores = -np.log10(selector.pvalues_)
+        selector.fit(bag_of_words, classes)
+        return selector.get_support(), scores[selector.get_support()]
 
     def perform_group_by(self, reviews):
         """

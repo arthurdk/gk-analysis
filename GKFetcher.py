@@ -70,7 +70,9 @@ def fetch_parse_page(url):
                         match = re.search(r'(\d+/\d+/\d+)', raw_reviewer[1])
                         date = match.group(1)
 
-                        review = GKReview(title=title, reviewer=reviewer, review_link=review_link, rating=rating, date=date)
+                        review = GKReview(title=title, reviewer=reviewer, review_link=review_link,
+                                          rating=rating,
+                                          date=date)
                         gk_reviews.append(review)
                 except:
                     print("Failed to parse test from list")

@@ -65,10 +65,13 @@ $ python GKAnalysis.py analyse words --mask-url https://pre00.deviantart.net/4ae
 [![N|Solid](http://reho.st/medium/self/a71eaac567ff912dbf667a9ab7e9e5b3b3adc69e.png)](http://reho.st/view/self/a71eaac567ff912dbf667a9ab7e9e5b3b3adc69e.png)
 
 
-Previous word cloud, all GK reviews (at least the 20 last page of tests), next one only Stoon for comparizon.
+Previous word cloud, all GK reviews were included (at least the 20 last page of tests), on the next one only Stoon's for comparison.
 
 ```sh
-$ python GKAnalysis.py analyse words --mask-url https://pre00.deviantart.net/4ae0/th/pre/f/2015/208/e/4/batman_logo_simple_by_animedark2-d933xx7.jpg --nb_words 200 --word-cloud-bg black --word-cloud-color-scheme whatever --rating-le 3 -R "Stoon"
+$ python GKAnalysis.py analyse words --mask-url \
+ https://pre00.deviantart.net/4ae0/th/pre/f/2015/208/e/4/batman_logo_simple_by_animedark2-d933xx7.jpg \
+ --nb_words 200 --word-cloud-bg black --word-cloud-color-scheme whatever \
+ --rating-le 3 -R "Stoon"
 
 ```
 
